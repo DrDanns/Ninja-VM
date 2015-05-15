@@ -1,0 +1,11 @@
+Debugger Spezifkationen:
+
+inspect
+			->stack - Der komplette Stack wird ausgegeben
+			->data  - Die statischen Daten werden ausgegeben
+			->back  - Springt zum Hauptmenü des Debuggers zurück 
+quit   		- Die Virtuelle Maschine wird beendet
+run    		- Das Programm läuft weiter ggf bis zum breakpoint
+list   		- Die Befehle im Programmspeicher werden aufgelistet
+step		- Der Befehl wird ausgeführt und das Programm springt  zum nächsten Befehl
+breakpoint 	- Das Programm läuft bis zu dem angegebenen Befehl weiter

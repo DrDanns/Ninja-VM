@@ -7,7 +7,14 @@
 
 #include "njvm_memory.h"
 
-void allocateSDA(int size)
+int STACK[STACKSIZE];
+int *StaticDataArea;
+int stackPointer;
+int framePointer;
+
+void allocateSDA(int sdaSize)
 {
-    StaticDataArea = (int*) malloc (size * sizeof(int));
+    StaticDataArea = (int*) malloc (sdaSize * sizeof(int));
+    if (StaticDataArea == NULL) 
+      fputs("Error: cannot allocate memory for the Static Data Area.\n", stderr);
 }

@@ -106,3 +106,49 @@ void popl (int pos)
     STACK[framePointer + pos] = pop();
 }
 
+void compare (int compCMD){
+  int n2 = pop();
+  int n1= pop();
+  
+  switch(compCMD){
+    case EQ:
+        (n1==n2) ? push(TRUE) : push(FALSE);
+	break;
+    case NE:
+        (n1!=n2) ? push(TRUE) : push(FALSE);
+        break;
+    case LT:
+	(n1<n2) ? push(TRUE) : push(FALSE);
+	break;
+    case LE:
+	(n1<=n2) ? push(TRUE) : push(FALSE);
+	break;
+    case GT:
+	(n1>n2) ? push(TRUE) : push(FALSE);
+	break;
+    case GE:
+	(n1>=n2) ? push(TRUE) : push(FALSE);
+	break;
+  }
+}
+
+int jmp(int pos){
+  return pos;
+}
+
+int brf (int pos, int progCount){
+  int top = pop();
+  if (top == FALSE){
+    return pos;  
+  } 
+  else return ++progCount;
+}
+
+int brt (int pos, int progCount){
+  int top = pop();
+  if (top == TRUE){
+    return pos;  
+  } 
+  else return progCount;
+}
+

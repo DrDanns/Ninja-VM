@@ -8,12 +8,14 @@
 #define NJVM_MEMORY
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "njvm.h"
 
-int STACK[STACKSIZE];
-int *StaticDataArea;
-int stackPointer;
-int framePointer;
+extern int STACK[STACKSIZE];
+extern int *StaticDataArea;
+extern int stackPointer;
+extern int framePointer;
+
 
 void allocateSDA(int sdaSize);
 

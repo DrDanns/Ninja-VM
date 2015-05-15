@@ -7,15 +7,19 @@
 #ifndef NJVM_MAIN
 #define NJVM_MAIN
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "njvm.h"
 #include "njvm_filehandler.h"
 #include "njvm_instructions.h"
+#include "njvm_debug.h"
 
 int main (int argc, char *argv[]);
-void menu(int argc,  char** argv);
+void njvmMenu(int argc,  char** argv);
 void pc (unsigned int program_memory[]);
-void exec(int IR);
-void printPM(unsigned int program_memory[]);
+int exec(int opcode, int immediate, int progCount);
 void end(void);
 
 #endif /*NJVM_MAIN*/

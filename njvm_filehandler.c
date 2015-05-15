@@ -33,7 +33,7 @@ unsigned int* readFile(FILE* file)
         exit(EXIT_FAILURE);
     }
 
-    /*check the header*/
+/*check the header*/
     for (i=0; i < 4; i++) {
 
         fread(buffer, sizeof(int),1,file);

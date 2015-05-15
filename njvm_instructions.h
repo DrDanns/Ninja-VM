@@ -27,5 +27,9 @@ void asf(int places);
 void rsf (void);
 void pushl(int pos);
 void popl (int pos);
+void compare (int compCMD);
+int jmp(int pos);
+int brf (int pos, int progCount);
+int brt (int pos, int progCount);
 
 #endif /*NJVM_INSTRUCTIONS*/
