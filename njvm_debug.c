@@ -7,26 +7,25 @@
 
 #include "njvm_debug.h"
 
-
+int haltFlag = FALSE;
+int bpFlag = FALSE;
 
 
 void debugMenu(unsigned int program_memory[], int pos){
     int breakPoint;
-    int haltVM = FALSE;
-    int setBP = FALSE;
-    int doStep = TRUE;
+    int stepFlag = TRUE;
     char charInput[50];
     int intInput;
-    int i;
 
 
-    while (strcmp(charInput, "quit")==0 || haltVM == TRUE){
+    while (strcmp(charInput, "quit")==0 || haltFLag == TRUE){
 
-        printProgLine(program_memory[pos]);
+        printf("%03d:\t", pos);
+        printInstruction(program_memory[pos]);
 
-        if (doStep == TRUE){
-            debugPC(program_memory, pos);
-            doStep = FALSE;
+        if (stepFlag == TRUE){
+            pos=exec(program_memory[],pos++);
+            stepFlag = FALSE;
         }
 
         printf("DEBUG: inspect, list, breakpoint, step, run ,quit?\n");
@@ -45,15 +44,12 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "list")==0){
-            for (i=0; OPCODE(program_memory[i]) != HALT ;i++) {
-                printProgLine(program_memory[i]);
-            }
-            printf("--- end of code ---\n");
+            printAllInstructions(int program_memory[]);
         }
 
         else if (strcmp(charInput, "breakpoint")==0){
 
-            if (setBP == FALSE){
+            if (bpFlag == FALSE){
                 printf("DEBUG [breakpoint]: cleared\n");
             }else {
                 printf("DEBUG [breakpoint]: set at %d\n", breakPoint);
@@ -61,14 +57,15 @@ void debugMenu(unsigned int program_memory[], int pos){
 
             printf("DEBUG [breakpoint]: address to set, -1 to clear, <ret> for no change\n");
 
+            /*TODO: return von scanf überarbeiten*/
             if (scanf("%d", &intInput )!=0){
 
                 if (intInput == -1){
-                    setBP = FALSE;
+                    bpFlag = FALSE;
                     printf("DEBUG [breakpoint]: now cleared\n");
                 }
                 else{
-                    setBP = TRUE;
+                    bpFlag = TRUE;
                     breakPoint = intInput;
                     printf("DEBUG [breakpoint]: now set at %d\n", breakPoint);
                 }
@@ -77,42 +74,31 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "step")==0){
-            pos++;
-            doStep = TRUE;
+            stepFlag = TRUE;
         }
 
         else if (strcmp(charInput, "run")==0){
-
-            if (setBP ==TRUE){
-                while (pos != breakPoint){
-                    debugPC(program_memory, pos);
-                }
-            }
-            else {
-                while (haltVM != TRUE){
-                    haltVM = debugPC(program_memory, pos);
-                }
-            }
-
+            run(program_memory[], pos, breakPoint);
         }
     }
 
 }
 
-int debugPC(unsigned int *program_memory[],int *pos){
-
-
+void run(unsigned int *program_memory[],int *pos, int breakPoint){
+    
     int instruction = program_memory[pos];
 
-    if (OPCODE(instruction) != HALT) {
-        instruction = program_memory[progCount];
-        &pos = exec(OPCODE(instruction), SIGN_EXTEND( IMMEDIATE( (instruction))), progCount);
-        return FALSE;
+    while (OPCODE(instruction) != HALT) {
+    
+       if (bpFlag==TRUE && (breakPoint-1)==pos){
+        return;
+       }
+       &pos = exec(instruction, pos++);
+       instruction = program_memory[pos];
     }
-
-    return TRUE;
-
-
+    
+    haltFlag = TRUE;
+    
 }
 
 void printStack(void){
@@ -132,6 +118,7 @@ void printStack(void){
 }
 
 void printSDA(void){
+
     int i;
     int sdaSize = sizeof(StaticDataArea) / sizeof(int);;
     printf("--- Show Data ---\n");
@@ -139,17 +126,29 @@ void printSDA(void){
         printf("Data %i: %i\n",i,StaticDataArea[i]) ;
     }
     printf("--- End of Data ---\n");
+    
 }
 
-void printProgLine(unsigned int *program_line)
-{
-    int i = 0;
+void printAllInstructions(unsigned int* program_memory){
 
-        printf("%03d:\t", i);
+    int i;
+    
+    for (i=0; OPCODE(program_memory[i]) != HALT ;i++) {
+                printf("%03d:\t", i);
+                printInstruction(program_memory[i]);
+         }
+    printf("--- end of code ---\n");"
+ 
+}
 
-        switch (OPCODE(program_line)) {
+void printInstruction(unsigned int *instruction){
+
+    int immediate = SIGN_EXTEND(IMMEDIATE((instruction)));
+    int opcode = OPCODE(instruction);
+
+        switch (opcode) {
             case PUSHC:
-                printf("pushc\t%d\n", SIGN_EXTEND(IMMEDIATE(program_line)));
+                printf("pushc\t%d\n", immediate);
                 break;
 
             case ADD:
@@ -193,15 +192,15 @@ void printProgLine(unsigned int *program_line)
                 break;
 
             case PUSHG:
-                printf("pushg\t%d\n", SIGN_EXTEND(IMMEDIATE( program_line)));
+                printf("pushg\t%d\n", immediate);
                 break;
 
             case POPG:
-                printf("popg\t%d\n", SIGN_EXTEND(IMMEDIATE( program_line)));
+                printf("popg\t%d\n", immediate);
                 break;
 
             case ASF:
-                printf("asf\t%d\n", SIGN_EXTEND(IMMEDIATE( program_line)));
+                printf("asf\t%d\n", immediate);
                 break;
 
             case RSF:
@@ -209,13 +208,13 @@ void printProgLine(unsigned int *program_line)
                 break;
 
             case PUSHL:
-                printf("pushl\t%d\n", SIGN_EXTEND(IMMEDIATE( program_line)));
+                printf("pushl\t%d\n", immediate);
                 break;
 
             case POPL:
-                printf("popl\t%d\n", SIGN_EXTEND(IMMEDIATE( program_line)));
+                printf("popl\t%d\n", immediate);
                 break;
-//TODO: ab hier überarbeiten
+/*TODO: ab hier überarbeiten*/
             case EQ:
                 compare(EQ);
                 return ++progCount;
@@ -248,11 +247,9 @@ void printProgLine(unsigned int *program_line)
 
             case BRT:
                 return brt(immediate, progCount);
-
-        }
-
-        i = i+1;
-
+                
+                
+                }
 
 }
 

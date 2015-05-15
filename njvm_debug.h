@@ -20,7 +20,7 @@ void debugMenu(unsigned int program_memory[], int pos);
 int debugPC(unsigned int *program_memory[],int *pos);
 void printStack(void);
 void printSDA(void);
-void printProgLine(unsigned int *program_line);
+void printInstruction(unsigned int *instruction);
 
 
 #endif /*NJVM_DEBUG*/

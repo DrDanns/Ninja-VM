@@ -41,21 +41,21 @@ unsigned int* readFile(FILE* file)
         if (i==0){
             if(*buffer != 1178749518){ /*NJVM in int*/
                 fputs("Error: File has not Ninja Binary File Format.\n", stderr);
-		exit(EXIT_FAILURE);
-	    }
+		        exit(EXIT_FAILURE);
+	        }
         }
 
-        if (i==1){
+        else if (i==1){
             if (*buffer != VERSION){
                 fputs("Error: File has wrong Version Number.\n", stderr);
-		exit(EXIT_FAILURE);
-	    }
-	}    
+		        exit(EXIT_FAILURE);
+	        }
+	    }    
 
-        if (i==2)
+        else if (i==2)
             instructionSize=*buffer;
 
-        if (i==3)
+        else if (i==3)
             sdaSize=*buffer;
 
     }

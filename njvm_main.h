@@ -19,7 +19,7 @@
 int main (int argc, char *argv[]);
 void njvmMenu(int argc,  char** argv);
 void pc (unsigned int program_memory[]);
-int exec(int opcode, int immediate, int progCount);
+int exec(int instruction, int progCount);
 void end(void);
 
 #endif /*NJVM_MAIN*/

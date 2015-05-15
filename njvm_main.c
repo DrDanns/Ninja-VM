@@ -9,13 +9,12 @@
 #include "njvm_main.h"
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+
     printf("Ninja Virtual Machine started\n");
     atexit(end); /*includes end() after every exit*/
     njvmMenu(argc, argv);
     return (EXIT_SUCCESS);
-
 }
 
 void njvmMenu(int argc,  char** argv)
@@ -41,7 +40,7 @@ void njvmMenu(int argc,  char** argv)
 	      exit(EXIT_FAILURE);
 	  } 
 	  else{ /*debugger starten*/
-          debugMenu(readFile(openFile(argv[2])), 0);
+          /*debugMenu(readFile(openFile(argv[2])), 0);*/
           return;
 	  }
     }
@@ -50,34 +49,33 @@ void njvmMenu(int argc,  char** argv)
 	return;
 	
     }
-      
-    
+   
 }
 
 
 
 
-void pc (unsigned int program_memory[])
-{
+void pc (unsigned int program_memory[]){
 
     int progCount = 0;
     int instruction = program_memory[progCount];
 
     while (OPCODE(instruction) != HALT) {
+       progCount = exec(instruction, progCount);
        instruction = program_memory[progCount];
-       progCount = exec(OPCODE(instruction), SIGN_EXTEND( IMMEDIATE( (instruction))), progCount);
     }
-
 }
 
-int exec(int opcode, int immediate, int progCount)
-{
+int exec(int instruction, int progCount){
+
+    int immediate = SIGN_EXTEND(IMMEDIATE((instruction)));
+    int opcode = OPCODE(instruction);
 
     switch (opcode) {
 
     case HALT:
-        haltVM=TRUE;
-        return ++progCount;
+        fputs("Error: Programm durch HALT in Funktion exec beendet.\n", stderr);
+	    exit(EXIT_FAILURE);
 
     case PUSHC:
         push(immediate);
@@ -181,7 +179,6 @@ int exec(int opcode, int immediate, int progCount)
     }
     
     return 0;
-
 
 }
 
