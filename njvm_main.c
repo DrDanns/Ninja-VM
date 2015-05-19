@@ -40,7 +40,7 @@ void njvmMenu(int argc,  char** argv)
 	      exit(EXIT_FAILURE);
 	  } 
 	  else{ /*debugger starten*/
-          /*debugMenu(readFile(openFile(argv[2])), 0);*/
+          debugMenu(readFile(openFile(argv[2])), 0);
           return;
 	  }
     }
