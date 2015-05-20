@@ -10,35 +10,33 @@
 
 
 int main(int argc, char *argv[]){
-
     printf("Ninja Virtual Machine started\n");
     atexit(end); /*includes end() after every exit*/
     njvmMenu(argc, argv);
     return (EXIT_SUCCESS);
 }
 
-void njvmMenu(int argc,  char** argv)
-{
+void njvmMenu(int argc,  char** argv){
 
     if (argc==1){ /*if only "./njvm"*/
 	    fputs("Error: no code file specified.\n", stderr);
 	    exit(EXIT_FAILURE);
-    }     
+    }
     else if (strcmp(argv[1], "--version")==0) {
         printf("Version %d\n", VERSION);
     }
     else if (strcmp(argv[1], "--help")==0) {
-        printf("Usage: ./njvm [OPTIONS] <code file>\n");
+      printf("Usage: ./njvm [OPTIONS] <code file>\n");
 	    printf("Options:\n");
-	    printf("  --debug \tstart virtual machine in debug mode\n");
-        printf("  --version \tshow version and exit\n");
-        printf("  --help \tshow this help and exit\n");
+      printf("  --debug \tstart virtual machine in debug mode\n");
+      printf("  --version \tshow version and exit\n");
+      printf("  --help \tshow this help and exit\n");
     }
     else if (strcmp(argv[1], "--debug")==0){
 	  if (argc != 3){
 	      fputs("Error: no code file specified.\n", stderr);
 	      exit(EXIT_FAILURE);
-	  } 
+	  }
 	  else{ /*debugger starten*/
           debugMenu(readFile(openFile(argv[2])), 0);
           return;
@@ -46,14 +44,11 @@ void njvmMenu(int argc,  char** argv)
     }
     else{ /*load and execute the programm*/
         pc(readFile(openFile(argv[1])));
-	return;
-	
+        return;
+
     }
-   
+
 }
-
-
-
 
 void pc (unsigned int program_memory[]){
 
@@ -128,23 +123,23 @@ int exec(int instruction, int progCount){
     case ASF:
         asf(immediate);
         return ++progCount;
-	
+
     case RSF:
         rsf();
         return ++progCount;
-        
+
     case PUSHL:
         pushl(immediate);
         return ++progCount;
-	
+
     case POPL:
         popl(immediate);
         return ++progCount;
-	
+
     case EQ:
         compare(EQ);
         return ++progCount;
-	
+
     case NE:
         compare(NE);
         return ++progCount;
@@ -152,41 +147,36 @@ int exec(int instruction, int progCount){
     case LT:
 	    compare(LT);
 	    return ++progCount;
-	
+
     case LE:
 	    compare(LE);
 	    return ++progCount;
-	
+
     case GT:
 	    compare(GT);
 	    return ++progCount;
-	
+
     case GE:
 	    compare(GE);
 	    return ++progCount;
-	
+
     case JMP:
 	    return jmp(immediate);
-	
+
     case BRF:
 	    return brf(immediate, progCount);
-	
+
     case BRT:
 	    return brt(immediate, progCount);
-	
+
     default: fputs("Error: Unsupported Operation-Code.\n", stderr);
 	     exit(EXIT_FAILURE);
     }
-    
+
     return 0;
 
 }
 
-
-void end(void)
-{
+void end(void){
     printf("Ninja Virtual Machine stopped\n");
 }
-
-
-

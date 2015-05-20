@@ -17,10 +17,10 @@
 #include "njvm.h"
 
 void debugMenu(unsigned int program_memory[], int pos);
-int debugPC(unsigned int *program_memory[],int *pos);
-void printAllInstructions(unsigned int* program_memory)
+void run(unsigned int* program_memory[],int *pos, int *breakPoint);
 void printStack(void);
 void printSDA(void);
+void printAllInstructions(unsigned int* program_memory);
 void printInstruction(unsigned int *instruction);
 
 

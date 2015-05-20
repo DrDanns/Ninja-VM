@@ -1,7 +1,7 @@
 /*
  * File:	njvm_debug.c
  * Author:	Stanislav Hannes, 5000458
- * Date:	14.01.2015
+ * Date:	20.05.2015
  * Describtion:	extends functions for the using of the debugger
  */
 
@@ -13,7 +13,7 @@ int bpFlag = FALSE;
 
 void debugMenu(unsigned int program_memory[], int pos){
     int breakPoint;
-    int stepFlag = TRUE;
+    int stepFlag = FALSE;
     char charInput[50];
     int intInput;
 
@@ -21,19 +21,19 @@ void debugMenu(unsigned int program_memory[], int pos){
     while (strcmp(charInput, "quit")==0 || haltFLag == TRUE){
 
         printf("%03d:\t", pos);
-        printInstruction(program_memory[pos]);
+        printInstruction(&program_memory[pos]);
 
         if (stepFlag == TRUE){
-            pos=exec(program_memory[],pos++);
+            pos=exec(program_memory[pos],pos);
             stepFlag = FALSE;
         }
 
         printf("DEBUG: inspect, list, breakpoint, step, run ,quit?\n");
-        scanf("%s", &charInput );
+        scanf("%s", charInput );
 
         if (strcmp(charInput, "inspect")==0){
             printf("DEBUG [inspect]: stack, data?\n");
-            scanf("%s", &charInput );
+            scanf("%s", charInput );
 
             if (strcmp(charInput, "stack")==0){
                 printStack();
@@ -44,15 +44,15 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "list")==0){
-            printAllInstructions(int program_memory[]);
+          printAllInstructions(program_memory);
         }
 
         else if (strcmp(charInput, "breakpoint")==0){
 
             if (bpFlag == FALSE){
-                printf("DEBUG [breakpoint]: cleared\n");
+              printf("DEBUG [breakpoint]: cleared\n");
             }else {
-                printf("DEBUG [breakpoint]: set at %d\n", breakPoint);
+              printf("DEBUG [breakpoint]: set at %d\n", breakPoint);
             }
 
             printf("DEBUG [breakpoint]: address to set, -1 to clear, <ret> for no change\n");
@@ -78,30 +78,30 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "run")==0){
-            run(program_memory[], pos, breakPoint);
+            run(&program_memory, &pos, &breakPoint);
         }
     }
 
 }
 
-void run(unsigned int *program_memory[],int *pos, int breakPoint){
-    
+void run(unsigned int* program_memory[],int *pos, int *breakPoint){
+
     int instruction = program_memory[pos];
 
     while (OPCODE(instruction) != HALT) {
-    
+
        if (bpFlag==TRUE && (breakPoint-1)==pos){
         return;
        }
-       &pos = exec(instruction, pos++);
+       pos = exec(instruction, pos++);
        instruction = program_memory[pos];
     }
-    
+
     haltFlag = TRUE;
-    
+
 }
 
-void printStack(void){
+void printStack(void){/*
     int i;
     printf("--- Show Stack ---\n");
     printf("SP--> | %10c           | -- %i\n", 'x',stackPointer);
@@ -114,10 +114,10 @@ void printStack(void){
         }
     }
     printf("      ------------------------\n");
-    printf("--- End of Stack ---\n");
+    printf("--- End of Stack ---\n");*/
 }
 
-void printSDA(void){
+void printSDA(void){/*
 
     int i;
     int sdaSize = sizeof(StaticDataArea) / sizeof(int);;
@@ -125,20 +125,20 @@ void printSDA(void){
     for(i = 0; i<sdaSize; i++) {
         printf("Data %i: %i\n",i,StaticDataArea[i]) ;
     }
-    printf("--- End of Data ---\n");
-    
+    printf("--- End of Data ---\n");*/
+
 }
 
 void printAllInstructions(unsigned int* program_memory){
 
     int i;
-    
+
     for (i=0; OPCODE(program_memory[i]) != HALT ;i++) {
                 printf("%03d:\t", i);
                 printInstruction(program_memory[i]);
          }
-    printf("--- end of code ---\n");"
- 
+    printf("--- end of code ---\n");
+
 }
 
 void printInstruction(unsigned int *instruction){
@@ -214,43 +214,42 @@ void printInstruction(unsigned int *instruction){
             case POPL:
                 printf("popl\t%d\n", immediate);
                 break;
-/*TODO: ab hier überarbeiten*/
             case EQ:
-                compare(EQ);
-                return ++progCount;
+                printf("eq\t\n");
+                break;
 
             case NE:
-                compare(NE);
-                return ++progCount;
+                printf("ne\t\n");
+                break;
 
             case LT:
-                compare(LT);
-                return ++progCount;
+                printf("lt\t\n");
+                break;
 
             case LE:
-                compare(LE);
-                return ++progCount;
+                printf("le\t\n");
+                break;
 
             case GT:
-                compare(GT);
-                return ++progCount;
+                printf("gt\t\n");
+                break;
 
             case GE:
-                compare(GE);
-                return ++progCount;
+                printf("ge\t\n");
+                break;
 
             case JMP:
-                return jmp(immediate);
+                printf("jmp\t%d\n", immediate);
+                break;
 
             case BRF:
-                return brf(immediate, progCount);
+                printf("brf\t%d\n",immediate);
+                break;
 
             case BRT:
-                return brt(immediate, progCount);
-                
-                
+                printf("brt\t\n",immediate);
+                break;
+
                 }
 
 }
-
-
