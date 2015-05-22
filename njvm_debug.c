@@ -18,7 +18,7 @@ void debugMenu(unsigned int program_memory[], int pos){
     int intInput;
 
 
-    while (strcmp(charInput, "quit")==0 || haltFlag == FALSE){
+    while (haltFlag == FALSE){
 
 
       if (stepFlag == TRUE){
@@ -57,9 +57,8 @@ void debugMenu(unsigned int program_memory[], int pos){
               printf("DEBUG [breakpoint]: set at %d\n", breakPoint);
             }
 
-            printf("DEBUG [breakpoint]: address to set, -1 to clear, <ret> for no change\n");
+            printf("DEBUG [breakpoint]: address to set, -1 to clear\n");
 
-            /*TODO: return von scanf überarbeiten*/
             if (scanf("%d", &intInput )!=0){
 
                 if (intInput == -1){
@@ -76,68 +75,81 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "step")==0){
-            stepFlag = TRUE;
+          stepFlag = TRUE;
         }
 
         else if (strcmp(charInput, "run")==0){
-            run(program_memory, pos, breakPoint);
+          pos=run(program_memory, pos, breakPoint);
+          bpFlag = FALSE;
+        }
+
+        else if (strcmp(charInput, "quit")==0){
+          haltFlag=TRUE;
         }
     }
 
 }
 
-void run(unsigned int program_memory[],int pos, int breakPoint){
+/*TODO: return ersetzen durch pointer und evtl. malloc*/
+int run(unsigned int program_memory[],int pos, int breakPoint){
 
     int instruction = program_memory[pos];
 
     while (OPCODE(instruction) != HALT) {
 
-       if (bpFlag==TRUE && (breakPoint-1)==pos){
-        return;
+       if (bpFlag==TRUE && (breakPoint)==pos){
+        return pos;
        }
        pos = exec(instruction, pos++);
        instruction = program_memory[pos];
     }
 
     haltFlag = TRUE;
-    printf("haltFlage = true");
+    return pos;
+
 
 }
 
-void printStack(void){/*
+void printStack(void){
     int i;
     printf("--- Show Stack ---\n");
     printf("SP--> | %10c           | -- %i\n", 'x',stackPointer);
-    for(i = sC-1; i>=0; i--) {
+    for(i = stackPointer-1; i>=0; i--) {
         printf("      ------------------------\n");
-        if(i == fP) {
-            printf("FP--> | %10i           | -- %i\n", stack[i],i);
+        if(i == framePointer) {
+            printf("FP--> | %10i           | -- %i\n", STACK[i],i);
         } else {
-            printf("      | %10i           | -- %i\n", stack[i],i);
+            printf("      | %10i           | -- %i\n", STACK[i],i);
         }
     }
     printf("      ------------------------\n");
-    printf("--- End of Stack ---\n");*/
+    printf("--- End of Stack ---\n");
 }
 
-void printSDA(void){/*
+void printSDA(void){
 
     int i;
-    int sdaSize = sizeof(StaticDataArea) / sizeof(int);;
-    printf("--- Show Data ---\n");
-    for(i = 0; i<sdaSize; i++) {
+
+    /*TODO: Zeile wieder zum laufen bringen
+    int sdaSize = sizeof(StaticDataArea) / sizeof(int);*/
+
+    printf("sizeof(StaticDataArea): %d", SDASize );
+    printf("\n--- Show Static Data Area ---\n");
+    for(i = 0; i<SDASize; i++) {
         printf("Data %i: %i\n",i,StaticDataArea[i]) ;
     }
-    printf("--- End of Data ---\n");*/
+    printf("--- End of Static Data Area ---\n");
 
 }
 
 void printAllInstructions(unsigned int program_memory[]){
 
     int i;
-
+    int length = sizeof(program_memory);
+    printf("länge %d\n",length );
+    /*TODO: halt mit ausgeben. scheinbar funktioniert sizeof()  nicht*/
     for (i=0; OPCODE(program_memory[i]) != HALT ;i++) {
-                printf("%03d:\t", i);
+                printf("%04d:\t", i);
                 printInstruction(program_memory[i]);
          }
     printf("--- end of code ---\n");

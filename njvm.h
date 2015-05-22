@@ -1,4 +1,4 @@
-/* 
+/*
  * File:	njvm.c
  * Author:	Stanislav Hannes, 5000458
  * Date:	12.11.2014
@@ -16,6 +16,7 @@
 #define IMMEDIATE(x) ((x) & 0x00FFFFFF)
 #define SIGN_EXTEND(i) ((i) & 0x00800000 ? (i) | 0xFF000000 : (i))
 #define OPCODE(j) (((j) & 0xFF000000) >> 24)
+#define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
 #define HALT 0
 #define PUSHC 1
@@ -50,8 +51,3 @@
 #define BRT 25
 
 #endif /*NJVM*/
-
-
-
-
-

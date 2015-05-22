@@ -52,25 +52,25 @@ void mod(void)
 void rdint(void)
 {
     int i;
-    scanf(" %d", &i);
+    scanf("%d", &i);
     push(i);
 }
 
 void wrint(void)
 {
-    printf("%d", (int) pop());
+    printf("%d \n", (int) pop());
 }
 
 void rdchr(void)
 {
     char c;
-    scanf(" %c",&c);
+    scanf("%c",&c);
     push((int) c);
 }
 
 void wrchr(void)
 {
-    printf("%c", (char) pop());
+    printf("%c \n", (char) pop());
 }
 
 void pushg(int pos)
@@ -109,7 +109,7 @@ void popl (int pos)
 void compare (int compCMD){
   int n2 = pop();
   int n1= pop();
-  
+
   switch(compCMD){
     case EQ:
         (n1==n2) ? push(TRUE) : push(FALSE);
@@ -139,16 +139,15 @@ int jmp(int pos){
 int brf (int pos, int progCount){
   int top = pop();
   if (top == FALSE){
-    return pos;  
-  } 
+    return pos;
+  }
   else return ++progCount;
 }
 
 int brt (int pos, int progCount){
   int top = pop();
   if (top == TRUE){
-    return pos;  
-  } 
+    return pos;
+  }
   else return progCount;
 }
-

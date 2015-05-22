@@ -15,6 +15,7 @@ extern int STACK[STACKSIZE];
 extern int *StaticDataArea;
 extern int stackPointer;
 extern int framePointer;
+extern int SDASize; /*Muss gelöscht werden*/
 
 
 void allocateSDA(int sdaSize);
