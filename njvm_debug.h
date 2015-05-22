@@ -17,11 +17,11 @@
 #include "njvm.h"
 
 void debugMenu(unsigned int program_memory[], int pos);
-void run(unsigned int* program_memory[],int *pos, int *breakPoint);
+void run(unsigned int program_memory[],int pos, int breakPoint);
 void printStack(void);
 void printSDA(void);
-void printAllInstructions(unsigned int* program_memory);
-void printInstruction(unsigned int *instruction);
+void printAllInstructions(unsigned int program_memory[]);
+void printInstruction(unsigned int instruction);
 
 
 #endif /*NJVM_DEBUG*/

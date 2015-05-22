@@ -18,18 +18,20 @@ void debugMenu(unsigned int program_memory[], int pos){
     int intInput;
 
 
-    while (strcmp(charInput, "quit")==0 || haltFLag == TRUE){
+    while (strcmp(charInput, "quit")==0 || haltFlag == FALSE){
 
-        printf("%03d:\t", pos);
-        printInstruction(&program_memory[pos]);
 
-        if (stepFlag == TRUE){
-            pos=exec(program_memory[pos],pos);
-            stepFlag = FALSE;
-        }
+      if (stepFlag == TRUE){
+        if (OPCODE(program_memory[pos]) != HALT)
+          pos=exec(program_memory[pos],pos); else break;
+        stepFlag = FALSE;
+      }
 
-        printf("DEBUG: inspect, list, breakpoint, step, run ,quit?\n");
-        scanf("%s", charInput );
+      printf("%04d:\t", pos);
+      printInstruction(program_memory[pos]);
+
+      printf("DEBUG: inspect, list, breakpoint, step, run ,quit?\n");
+      scanf("%s", charInput );
 
         if (strcmp(charInput, "inspect")==0){
             printf("DEBUG [inspect]: stack, data?\n");
@@ -78,13 +80,13 @@ void debugMenu(unsigned int program_memory[], int pos){
         }
 
         else if (strcmp(charInput, "run")==0){
-            run(&program_memory, &pos, &breakPoint);
+            run(program_memory, pos, breakPoint);
         }
     }
 
 }
 
-void run(unsigned int* program_memory[],int *pos, int *breakPoint){
+void run(unsigned int program_memory[],int pos, int breakPoint){
 
     int instruction = program_memory[pos];
 
@@ -98,6 +100,7 @@ void run(unsigned int* program_memory[],int *pos, int *breakPoint){
     }
 
     haltFlag = TRUE;
+    printf("haltFlage = true");
 
 }
 
@@ -129,7 +132,7 @@ void printSDA(void){/*
 
 }
 
-void printAllInstructions(unsigned int* program_memory){
+void printAllInstructions(unsigned int program_memory[]){
 
     int i;
 
@@ -141,7 +144,7 @@ void printAllInstructions(unsigned int* program_memory){
 
 }
 
-void printInstruction(unsigned int *instruction){
+void printInstruction(unsigned int instruction){
 
     int immediate = SIGN_EXTEND(IMMEDIATE((instruction)));
     int opcode = OPCODE(instruction);
@@ -247,7 +250,7 @@ void printInstruction(unsigned int *instruction){
                 break;
 
             case BRT:
-                printf("brt\t\n",immediate);
+                printf("brt\t%d\n",immediate);
                 break;
 
                 }
