@@ -1,5 +1,5 @@
 //
-// prog01.asm -- call/ret without args, and without ret value
+// prog03.asm -- call/ret without args, but with ret value
 //
 
 	asf	3
@@ -8,6 +8,10 @@
 	pushc	'\n'
 	wrchr
 	call	proc
+	pushr
+	wrint
+	pushc	'\n'
+	wrchr
 	pushc	33
 	wrint
 	pushc	'\n'
@@ -18,8 +22,6 @@
 proc:
 	asf	2
 	pushc	22
-	wrint
-	pushc	'\n'
-	wrchr
+	popr
 	rsf
 	ret

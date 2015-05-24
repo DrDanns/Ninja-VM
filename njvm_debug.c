@@ -10,16 +10,13 @@
 int haltFlag = FALSE;
 int bpFlag = FALSE;
 
-
 void debugMenu(unsigned int program_memory[], int pos){
     int breakPoint;
     int stepFlag = FALSE;
     char charInput[50];
     int intInput;
 
-
     while (haltFlag == FALSE){
-
 
       if (stepFlag == TRUE){
         if (OPCODE(program_memory[pos]) != HALT)
@@ -33,23 +30,23 @@ void debugMenu(unsigned int program_memory[], int pos){
       printf("DEBUG: inspect, list, breakpoint, step, run ,quit?\n");
       scanf("%s", charInput );
 
-        if (strcmp(charInput, "inspect")==0){
+        if (strcmp(charInput, "inspect")==0 || strcmp(charInput, "i")==0){
             printf("DEBUG [inspect]: stack, data?\n");
             scanf("%s", charInput );
 
-            if (strcmp(charInput, "stack")==0){
+            if (strcmp(charInput, "stack")==0 || strcmp(charInput, "s")==0){
                 printStack();
             }
-            else if (strcmp(charInput, "data")==0){
+            else if (strcmp(charInput, "data")==0 || strcmp(charInput, "d")==0){
                 printSDA();
             }
         }
 
-        else if (strcmp(charInput, "list")==0){
+        else if (strcmp(charInput, "list")==0 || strcmp(charInput, "l")==0){
           printAllInstructions(program_memory);
         }
 
-        else if (strcmp(charInput, "breakpoint")==0){
+        else if (strcmp(charInput, "breakpoint")==0 || strcmp(charInput, "b")==0){
 
             if (bpFlag == FALSE){
               printf("DEBUG [breakpoint]: cleared\n");
@@ -74,16 +71,16 @@ void debugMenu(unsigned int program_memory[], int pos){
 
         }
 
-        else if (strcmp(charInput, "step")==0){
+        else if (strcmp(charInput, "step")==0 || strcmp(charInput, "s")==0){
           stepFlag = TRUE;
         }
 
-        else if (strcmp(charInput, "run")==0){
+        else if (strcmp(charInput, "run")==0 || strcmp(charInput, "r")==0){
           pos=run(program_memory, pos, breakPoint);
           bpFlag = FALSE;
         }
 
-        else if (strcmp(charInput, "quit")==0){
+        else if (strcmp(charInput, "quit")==0 || strcmp(charInput, "q")==0){
           haltFlag=TRUE;
         }
     }
@@ -107,7 +104,6 @@ int run(unsigned int program_memory[],int pos, int breakPoint){
     haltFlag = TRUE;
     return pos;
 
-
 }
 
 void printStack(void){
@@ -129,9 +125,6 @@ void printStack(void){
 void printSDA(void){
 
     int i;
-
-    /*TODO: Zeile wieder zum laufen bringen
-    int sdaSize = sizeof(StaticDataArea) / sizeof(int);*/
 
     printf("sizeof(StaticDataArea): %d", SDASize );
     printf("\n--- Show Static Data Area ---\n");
@@ -265,6 +258,29 @@ void printInstruction(unsigned int instruction){
                 printf("brt\t%d\n",immediate);
                 break;
 
+            case CALL:
+                printf("call\t%d\n",immediate);
+                break;
+
+            case RET:
+                printf("ret\t\n");
+                break;
+
+            case DROP:
+                printf("drop\t%d\n",immediate);
+                break;
+
+            case PUSHR:
+                printf("pushr\t\n");
+                break;
+
+            case POPR:
+                printf("popr\t\n");
+                break;
+
+            case DUP:
+                printf("dup\t\n");
+                break;
                 }
 
 }

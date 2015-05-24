@@ -1,4 +1,4 @@
-/* 
+/*
  * File:	njvm_instructions.h
  * Author:	Stanislav Hannes, 5000458
  * Date:	12.11.2014
@@ -16,7 +16,7 @@ void add(void);
 void sub(void);
 void mul(void);
 void division(void);
-void mod(void); 
+void mod(void);
 void rdint(void);
 void wrint(void);
 void rdchr(void);
@@ -31,5 +31,11 @@ void compare (int compCMD);
 int jmp(int pos);
 int brf (int pos, int progCount);
 int brt (int pos, int progCount);
+int call (int pos, int progCount);
+int ret (void);
+void drop(int entries);
+void pushr(void);
+void popr(void);
+void dup(void);
 
 #endif /*NJVM_INSTRUCTIONS*/

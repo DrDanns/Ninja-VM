@@ -70,7 +70,7 @@ int exec(int instruction, int progCount){
 
     case HALT:
         fputs("Error: Programm durch HALT in Funktion exec beendet.\n", stderr);
-	    exit(EXIT_FAILURE);
+	       exit(EXIT_FAILURE);
 
     case PUSHC:
         push(immediate);
@@ -145,32 +145,54 @@ int exec(int instruction, int progCount){
         return ++progCount;
 
     case LT:
-	    compare(LT);
-	    return ++progCount;
+        compare(LT);
+	      return ++progCount;
 
     case LE:
-	    compare(LE);
-	    return ++progCount;
+        compare(LE);
+        return ++progCount;
 
     case GT:
-	    compare(GT);
-	    return ++progCount;
+        compare(GT);
+        return ++progCount;
 
     case GE:
-	    compare(GE);
-	    return ++progCount;
+        compare(GE);
+        return ++progCount;
 
     case JMP:
-	    return jmp(immediate);
+        return jmp(immediate);
 
     case BRF:
-	    return brf(immediate, progCount);
+        return brf(immediate, progCount);
 
     case BRT:
-	    return brt(immediate, progCount);
+        return brt(immediate, progCount);
+
+    case CALL:
+        return call(immediate, progCount);
+
+    case RET:
+        return ret();
+
+    case DROP:
+        drop(immediate);
+        return ++progCount;
+
+    case PUSHR:
+        pushr();
+        return ++progCount;
+
+    case POPR:
+        popr();
+        return ++progCount;
+
+    case DUP:
+        dup();
+        return ++progCount;
 
     default: fputs("Error: Unsupported Operation-Code.\n", stderr);
-	     exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     return 0;

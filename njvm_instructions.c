@@ -58,7 +58,7 @@ void rdint(void)
 
 void wrint(void)
 {
-    printf("%d \n", (int) pop());
+    printf("%d", (int) pop());
 }
 
 void rdchr(void)
@@ -70,7 +70,7 @@ void rdchr(void)
 
 void wrchr(void)
 {
-    printf("%c \n", (char) pop());
+    printf("%c", (char) pop());
 }
 
 void pushg(int pos)
@@ -149,5 +149,32 @@ int brt (int pos, int progCount){
   if (top == TRUE){
     return pos;
   }
-  else return progCount;
+  else return ++progCount;
+}
+
+int call(int pos, int progCount){
+  push(++progCount);
+  return pos;
+}
+
+int ret(void){
+  return pop();
+}
+
+void drop(int entries){
+  stackPointer = stackPointer - entries;
+}
+
+void pushr(void) {
+	push(retRegister);
+}
+
+void popr(void) {
+	retRegister = pop();
+}
+
+void dup(void){
+  int value = pop();
+  push(value);
+  push(value);
 }
