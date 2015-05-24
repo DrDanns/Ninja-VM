@@ -10,20 +10,15 @@
 
 int STACK[STACKSIZE];
 int *StaticDataArea;
+int SDASize;
 int stackPointer;
 int framePointer;
-int SDASize;
+
 
 void allocateSDA(int sdaSize)
 {
-  /*TODO: SDA Size lässt sich nicht errechnen*/
-    printf("sizeof(StaticDataArea) sollte = %d \n", (sdaSize * sizeof(int)));
     StaticDataArea = (int*) malloc (sdaSize * sizeof(int));
-    printf("sizeof(int) : %d\n", sizeof(int));
-    printf("sizeof(sdaSize) : %d\n", sdaSize);
-    printf("sizeof(StaticDataArea) ist : %d\n", sizeof(StaticDataArea));
+    SDASize = sdaSize;
     if (StaticDataArea == NULL)
       fputs("Error: cannot allocate memory for the Static Data Area.\n", stderr);
-    SDASize = sdaSize;
-    printf("sda size globale variable: %d\n", SDASize);
 }

@@ -135,7 +135,7 @@ void printSDA(void){
 
     printf("sizeof(StaticDataArea): %d", SDASize );
     printf("\n--- Show Static Data Area ---\n");
-    for(i = 0; i<SDASize; i++) {
+    for(i = SDASize-1; i>-1; i--) {
         printf("Data %i: %i\n",i,StaticDataArea[i]) ;
     }
     printf("--- End of Static Data Area ---\n");
