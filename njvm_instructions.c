@@ -41,12 +41,16 @@ void mul(void)
 
 void division(void)
 {
-    push(pop() / pop());
+    int n2 = pop();
+    int n1= pop();
+    push(n1 / n2);
 }
 
 void mod(void)
 {
-    push(pop() % pop());
+    int n2 = pop();
+    int n1= pop();
+    push(n1 % n2);
 }
 
 void rdint(void)
