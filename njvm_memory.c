@@ -8,20 +8,18 @@
 
 #include "njvm_memory.h"
 
-int STACK[STACKSIZE];  /* Stack Array */
-int *StaticDataArea;    /* Static Data Area (Array) */
-int SDASize;          /* Size of the SDA. Calculatet from the Input-File */
+StackSlot stack[STACKSIZE];  /* Stack Array */
+int stackByteSize = STACKSIZE * sizeof(StackSlot);
+ObjRef *staticData;    /* Static Data Area (Array) */
+int sdaSize;          /* Size of the SDA. Calculatet from the Input-File */
 int stackPointer;
 int framePointer;
-int retRegister;    /* Return Value */
-
-
-
+ObjRef retRegister;    /* Return Value */
 
 void allocateSDA(int sdaSize)
 {
-    StaticDataArea = (int*) malloc (sdaSize * sizeof(int));
-    SDASize = sdaSize;
-    if (StaticDataArea == NULL)
+    staticData = (ObjRef*) malloc (sdaSize * sizeof(ObjRef));
+    sdaSize = sdaSize;
+    if (staticData == NULL)
       fputs("Error: cannot allocate memory for the Static Data Area.\n", stderr);
 }

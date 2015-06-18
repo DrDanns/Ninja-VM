@@ -69,31 +69,31 @@ int exec(int instruction, int progCount){
     switch (opcode) {
 
     case HALT:
-        fputs("Error: Programm durch HALT in Funktion exec beendet.\n", stderr);
+        fputs("Error: Programm durch HALT in Funktion exec() beendet.\n", stderr);
 	       exit(EXIT_FAILURE);
 
     case PUSHC:
-        push(immediate);
+        push(newObjRef(newValueObj(immediate)));
         return ++progCount;
 
     case ADD:
-        add();
+        calc(opcode);
         return ++progCount;
 
     case SUB:
-        sub();
+        calc(opcode);
         return ++progCount;
 
     case MUL:
-        mul();
+        calc(opcode);
         return ++progCount;
 
     case DIV:
-        division();
+        calc(opcode);
         return ++progCount;
 
     case MOD:
-        mod();
+        calc(opcode);
         return ++progCount;
 
     case RDINT:
@@ -137,27 +137,27 @@ int exec(int instruction, int progCount){
         return ++progCount;
 
     case EQ:
-        compare(EQ);
+        calc(opcode);
         return ++progCount;
 
     case NE:
-        compare(NE);
+        calc(opcode);
         return ++progCount;
 
     case LT:
-        compare(LT);
+        calc(opcode);
 	      return ++progCount;
 
     case LE:
-        compare(LE);
+        calc(opcode);
         return ++progCount;
 
     case GT:
-        compare(GT);
+        calc(opcode);
         return ++progCount;
 
     case GE:
-        compare(GE);
+        calc(opcode);
         return ++progCount;
 
     case JMP:

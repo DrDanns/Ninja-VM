@@ -11,128 +11,179 @@
 #include "njvm_instructions.h"
 
 
-void push(int c)
-{
-    STACK[stackPointer] = c;
-    stackPointer = stackPointer + 1;
+void push(StackSlot *obj) {
+  if(stackPointer*sizeof(StackSlot) <= stackByteSize) {
+        stack[stackPointer] = *obj;
+        stackPointer = stackPointer + 1;
+  } else {
+        fputs("Error: StackOverFlow.\n", stderr);
+        exit(EXIT_FAILURE);
+	}
 }
 
-int pop(void)
+StackSlot pop(void)
 {
     stackPointer =  stackPointer - 1;
-    return STACK[stackPointer];
-}
-
-void add(void)
-{
-    push(pop() + pop());
-}
-
-void sub(void)
-{
-    int num = pop();
-    push(pop() - num);
-}
-
-void mul(void)
-{
-    push(pop() * pop());
-}
-
-void division(void)
-{
-    int n2 = pop();
-    int n1= pop();
-    push(n1 / n2);
-}
-
-void mod(void)
-{
-    int n2 = pop();
-    int n1= pop();
-    push(n1 % n2);
+    return stack[stackPointer];
 }
 
 void rdint(void)
 {
     int i;
     scanf("%d", &i);
-    push(i);
+    push(newObjRef(newValueObj(i)));
 }
 
 void wrint(void)
 {
-    printf("%d", (int) pop());
+    StackSlot slot = pop();
+    if (slot.isObjRef == FALSE){
+      fputs("Error: cannot wrint; it's not an ObjRef.\n", stderr);
+    }
+    printf("%d", (int) *(int *)slot.u.objRef->data);
 }
 
 void rdchr(void)
 {
     char c;
     scanf("%c",&c);
-    push((int) c);
+    push(newObjRef(newValueObj((int) c)));
 }
 
 void wrchr(void)
 {
-    printf("%c", (char) pop());
+  StackSlot slot = pop();
+  if (slot.isObjRef == FALSE){
+    fputs("Error: cannot wrchr; it's not an ObjRef.\n", stderr);
+  }
+  printf("%c", (char) *(int *)slot.u.objRef->data);
 }
 
-void pushg(int pos)
+void pushg(int pos)  /*TODO:pushg überdenken*/
 {
-    push(StaticDataArea[pos]);
+    push(newObjRef(staticData[pos]));
 }
 
 void popg(int pos)
 {
-    StaticDataArea[pos]=pop();
+  StackSlot slot = pop();
+  if(slot.isObjRef == FALSE){
+    fputs("Error: cannot popg; it's not an ObjRef.\n", stderr);
+  }
+  staticData[pos]=slot.u.objRef;
 }
 
 void asf(int places)
 {
-    push(framePointer);
+    push(newObjNum(framePointer));
     framePointer = stackPointer;
     stackPointer = stackPointer + places;
 }
 
 void rsf (void)
 {
+    StackSlot slot = pop();
     stackPointer=framePointer;
-    framePointer=pop();
+    if(slot.isObjRef == TRUE){
+      fputs("Error: cannot rsf; it's an ObjRef.\n", stderr);
+    }
+    framePointer=slot.u.number;
 }
 
 void pushl(int pos)
 {
-    push(STACK[framePointer + pos]);
+    push(stack[framePointer + pos]);
 }
 
 void popl (int pos)
 {
-    STACK[framePointer + pos] = pop();
+    stack[framePointer + pos] = pop();
 }
 
-void compare (int compCMD){
-  int n2 = pop();
-  int n1= pop();
+void calc (int cmd){
+  StackSlot ss2 = pop();
+  StackSlot ss1 = pop();
+  if (ss1.isObjRef == FALSE || ss2.isObjRef == FALSE){
+    fputs("Error: cannot calculate; values are't ObjRef.\n", stderr);
+  }
 
-  switch(compCMD){
+  int n2 = *(int *)ss2.u.objRef->data;
+  int n1 = *(int *)ss1.u.objRef->data;
+
+  switch(cmd){
+    case ADD:
+              n1 = n1 + n2;
+              push(&ss1);
+              break;
+    case SUB:
+              n1 = n1 - n2;
+              push(&ss1);
+              break;
+    case MUL:
+              n1 = n1 * n2;
+              push(&ss1);
+              break;
+    case DIV:
+              n1 = n1 / n2;
+              push(&ss1);
+              break;
+    case MOD:
+              n1 = n1 % n2;
+              push(&ss1);
+              break;
     case EQ:
-        (n1==n2) ? push(TRUE) : push(FALSE);
-	break;
+              if(n1==n2){
+                n1 = TRUE;
+                push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
+              break;
     case NE:
-        (n1!=n2) ? push(TRUE) : push(FALSE);
-        break;
+              if(n1!=n2){
+                n1 = TRUE;
+                push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
     case LT:
-	(n1<n2) ? push(TRUE) : push(FALSE);
-	break;
+              if(n1<n2){
+              n1 = TRUE;
+              push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
+              break;
     case LE:
-	(n1<=n2) ? push(TRUE) : push(FALSE);
-	break;
+              if(n1<=n2){
+                n1 = TRUE;
+                push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
+              break;
     case GT:
-	(n1>n2) ? push(TRUE) : push(FALSE);
-	break;
+              if(n1>n2){
+                n1 = TRUE;
+                push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
+              break;
     case GE:
-	(n1>=n2) ? push(TRUE) : push(FALSE);
-	break;
+              if(n1>=n2){
+                n1 = TRUE;
+                push(&ss1);
+              } else {
+                n2 = FALSE;
+                push(&ss2);
+              }
+              break;
   }
 }
 
@@ -141,28 +192,34 @@ int jmp(int pos){
 }
 
 int brf (int pos, int progCount){
-  int top = pop();
-  if (top == FALSE){
+  StackSlot slot = pop();
+  if(slot.isObjRef == FALSE){
+    fputs("Error: cannot brf; top of stack isn't a ObjRef.\n", stderr);
+  }
+  if (*(int *)slot.u.objRef->data == FALSE){
     return pos;
   }
   else return ++progCount;
 }
 
 int brt (int pos, int progCount){
-  int top = pop();
-  if (top == TRUE){
+  StackSlot slot = pop();
+  if(slot.isObjRef == FALSE){
+    fputs("Error: cannot brt; top of stack isn't a ObjRef.\n", stderr);
+  }
+  if (*(int *)slot.u.objRef->data == TRUE){
     return pos;
   }
   else return ++progCount;
 }
 
 int call(int pos, int progCount){
-  push(++progCount);
+  push(newValueObj(++progCount));
   return pos;
 }
 
 int ret(void){
-  return pop();
+  return *(int *)pop().u.objRef->data;
 }
 
 void drop(int entries){
@@ -170,15 +227,15 @@ void drop(int entries){
 }
 
 void pushr(void) {
-	push(retRegister);
+	push(newObjNum(retRegister));
 }
 
 void popr(void) {
-	retRegister = pop();
+	retRegister = pop().u.objRef;
 }
 
 void dup(void){
-  int value = pop();
-  push(value);
-  push(value);
+  StackSlot temp = pop();
+  push(&temp);
+  push(&temp);
 }

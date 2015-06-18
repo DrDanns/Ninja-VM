@@ -8,15 +8,12 @@
 #define NJVM_INSTRUCTIONS
 
 #include "njvm_memory.h"
+#include "njvm_object.h"
 
 
-void push(int c);
-int pop(void);
-void add(void);
-void sub(void);
-void mul(void);
-void division(void);
-void mod(void);
+
+void push(StackSlot *obj);
+StackSlot pop(void);
 void rdint(void);
 void wrint(void);
 void rdchr(void);
@@ -27,7 +24,7 @@ void asf(int places);
 void rsf (void);
 void pushl(int pos);
 void popl (int pos);
-void compare (int compCMD);
+void calc (int cmd);
 int jmp(int pos);
 int brf (int pos, int progCount);
 int brt (int pos, int progCount);
