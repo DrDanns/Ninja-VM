@@ -1,4 +1,2 @@
 #!/bin/sh
-gcc -m32 -g -Wall -ansi -pedantic -o njvm njvm_main.c njvm_filehandler.c njvm_memory.c njvm_instructions.c njvm_debug.c
-
-
+gcc -m32 -g -Wall -ansi -pedantic -o njvm njvm_main.c njvm_filehandler.c njvm_memory.c njvm_instructions.c njvm_object.c njvm_debug.c

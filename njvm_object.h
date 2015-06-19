@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "njvm.h"
+
 
 
 typedef struct{
@@ -25,8 +27,8 @@ typedef struct{
   } u;
 } StackSlot;
 
-StackSlot *newObjRef(ObjRef obiRef);
+StackSlot *newStackSlot(ObjRef objRef);
+StackSlot *newObjRef(int value);
 StackSlot *newObjNum(int value);
-ObjRef *newValueObj(int value);
 
 #endif /*NJVM_OBJECT*/

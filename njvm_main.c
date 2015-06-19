@@ -73,7 +73,7 @@ int exec(int instruction, int progCount){
 	       exit(EXIT_FAILURE);
 
     case PUSHC:
-        push(newObjRef(newValueObj(immediate)));
+        push(newObjRef(immediate));
         return ++progCount;
 
     case ADD:

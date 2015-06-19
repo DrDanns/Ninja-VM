@@ -13,7 +13,7 @@
 
 
 void push(StackSlot *obj);
-StackSlot pop(void);
+StackSlot* pop(void);
 void rdint(void);
 void wrint(void);
 void rdchr(void);

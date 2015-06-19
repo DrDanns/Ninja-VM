@@ -10,15 +10,28 @@
 
 #include "njvm_object.h"
 
-StackSlot *newObjRef(ObjRef obiRef) {
-	StackSlot *result;
-	result = (StackSlot *)malloc(sizeof(StackSlot));
+StackSlot *newStackSlot(ObjRef objRef){
+	return newObjRef((int)(int *)objRef->data);
+}
 
+StackSlot *newObjRef(int value) {
+	StackSlot *result;
+	ObjRef objRef;
+
+	objRef = *(ObjRef *)malloc(sizeof(unsigned int) + sizeof(int));
+	if(objRef == NULL) {
+		fputs("Error: cannot allocate memory for obiRef.\n", stderr);
+	}
+
+	result = (StackSlot *)malloc(sizeof(StackSlot));
 	if(result == NULL) {
 		fputs("Error: cannot allocate newObjRef memory.\n", stderr);
 	}
+
+	objRef->size = sizeof(int);
+	*(int *)objRef->data = value;
 	result->isObjRef = TRUE;
-	result->u.objRef = obiRef;
+	result->u.objRef = objRef;
 
 	return result;
 }
@@ -32,15 +45,4 @@ StackSlot *newObjNum(int value) {
 	result->isObjRef = FALSE;
 	result->u.number = value;
 	return result;
-}
-
-ObjRef *newValueObj(int value){
-	objRef *objRef;
-	objRef = (ObjRef *)malloc(sizeof(unsigned int) + sizeof(int));
-	if(objRef == NULL) {
-		fputs("Error: cannot allocate newValueObj memory.\n", stderr);
-	}
-	objRef->size = sizeof(int);
-	*(int *)objRef->data = value;
-	return objRef;
 }

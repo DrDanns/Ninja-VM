@@ -13,7 +13,7 @@
 
 void push(StackSlot *obj) {
   if(stackPointer*sizeof(StackSlot) <= stackByteSize) {
-        stack[stackPointer] = *obj;
+        stack[stackPointer] = obj;
         stackPointer = stackPointer + 1;
   } else {
         fputs("Error: StackOverFlow.\n", stderr);
@@ -21,7 +21,7 @@ void push(StackSlot *obj) {
 	}
 }
 
-StackSlot pop(void)
+StackSlot *pop(void)
 {
     stackPointer =  stackPointer - 1;
     return stack[stackPointer];
@@ -31,49 +31,49 @@ void rdint(void)
 {
     int i;
     scanf("%d", &i);
-    push(newObjRef(newValueObj(i)));
+    push(newObjRef(i));
 }
 
 void wrint(void)
 {
-    StackSlot slot = pop();
-    if (slot.isObjRef == FALSE){
+    StackSlot *slot = pop();
+    if (slot->isObjRef == FALSE){
       fputs("Error: cannot wrint; it's not an ObjRef.\n", stderr);
     }
-    printf("%d", (int) *(int *)slot.u.objRef->data);
+    printf("%d", *(int *)slot->u.objRef->data);
 }
 
 void rdchr(void)
 {
     char c;
     scanf("%c",&c);
-    push(newObjRef(newValueObj((int) c)));
+    push(newObjRef((int) c));
 }
 
 void wrchr(void)
 {
-  StackSlot slot = pop();
-  if (slot.isObjRef == FALSE){
+  StackSlot *slot = pop();
+  if (slot->isObjRef == FALSE){
     fputs("Error: cannot wrchr; it's not an ObjRef.\n", stderr);
   }
-  printf("%c", (char) *(int *)slot.u.objRef->data);
+  printf("%c", *(int *)slot->u.objRef->data);
 }
 
-void pushg(int pos)  /*TODO:pushg überdenken*/
+void pushg(int pos)
 {
-    push(newObjRef(staticData[pos]));
+  push(newStackSlot(staticData[pos]));
 }
 
 void popg(int pos)
 {
-  StackSlot slot = pop();
-  if(slot.isObjRef == FALSE){
+  StackSlot *slot = pop();
+  if(slot->isObjRef == FALSE){
     fputs("Error: cannot popg; it's not an ObjRef.\n", stderr);
   }
-  staticData[pos]=slot.u.objRef;
+  staticData[pos]=slot->u.objRef;
 }
 
-void asf(int places)
+void asf(int places) /*TODO: überdenken*/
 {
     push(newObjNum(framePointer));
     framePointer = stackPointer;
@@ -82,12 +82,13 @@ void asf(int places)
 
 void rsf (void)
 {
-    StackSlot slot = pop();
+    StackSlot *slot = pop();
     stackPointer=framePointer;
-    if(slot.isObjRef == TRUE){
+      printf("rsf: %d",slot->isObjRef);
+    if(slot->isObjRef == TRUE){
       fputs("Error: cannot rsf; it's an ObjRef.\n", stderr);
     }
-    framePointer=slot.u.number;
+    framePointer=slot->u.number;
 }
 
 void pushl(int pos)
@@ -101,87 +102,89 @@ void popl (int pos)
 }
 
 void calc (int cmd){
-  StackSlot ss2 = pop();
-  StackSlot ss1 = pop();
-  if (ss1.isObjRef == FALSE || ss2.isObjRef == FALSE){
+  StackSlot *ss2 = pop();
+  StackSlot *ss1 = pop();
+  int n2;
+  int n1;
+  if (ss1->isObjRef == FALSE || ss2->isObjRef == FALSE){
     fputs("Error: cannot calculate; values are't ObjRef.\n", stderr);
   }
 
-  int n2 = *(int *)ss2.u.objRef->data;
-  int n1 = *(int *)ss1.u.objRef->data;
+  n2 = (int)(int *)ss2->u.objRef->data;
+  n1 = (int)(int *)ss1->u.objRef->data;
 
   switch(cmd){
     case ADD:
               n1 = n1 + n2;
-              push(&ss1);
+              push(ss1);
               break;
     case SUB:
               n1 = n1 - n2;
-              push(&ss1);
+              push(ss1);
               break;
     case MUL:
               n1 = n1 * n2;
-              push(&ss1);
+              push(ss1);
               break;
     case DIV:
               n1 = n1 / n2;
-              push(&ss1);
+              push(ss1);
               break;
     case MOD:
               n1 = n1 % n2;
-              push(&ss1);
+              push(ss1);
               break;
     case EQ:
               if(n1==n2){
                 n1 = TRUE;
-                push(&ss1);
+                push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
               break;
     case NE:
               if(n1!=n2){
                 n1 = TRUE;
-                push(&ss1);
+                push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
     case LT:
               if(n1<n2){
               n1 = TRUE;
-              push(&ss1);
+              push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
               break;
     case LE:
               if(n1<=n2){
                 n1 = TRUE;
-                push(&ss1);
+                push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
               break;
     case GT:
               if(n1>n2){
                 n1 = TRUE;
-                push(&ss1);
+                push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
               break;
     case GE:
               if(n1>=n2){
                 n1 = TRUE;
-                push(&ss1);
+                push(ss1);
               } else {
                 n2 = FALSE;
-                push(&ss2);
+                push(ss2);
               }
               break;
   }
@@ -192,34 +195,34 @@ int jmp(int pos){
 }
 
 int brf (int pos, int progCount){
-  StackSlot slot = pop();
-  if(slot.isObjRef == FALSE){
-    fputs("Error: cannot brf; top of stack isn't a ObjRef.\n", stderr);
+  StackSlot *slot = pop();
+  if(slot->isObjRef == TRUE){
+    fputs("Error: cannot brf; top of stack is a ObjRef.\n", stderr);
   }
-  if (*(int *)slot.u.objRef->data == FALSE){
+  if (slot->u.number == FALSE){
     return pos;
   }
   else return ++progCount;
 }
 
 int brt (int pos, int progCount){
-  StackSlot slot = pop();
-  if(slot.isObjRef == FALSE){
-    fputs("Error: cannot brt; top of stack isn't a ObjRef.\n", stderr);
+  StackSlot *slot = pop();
+  if(slot->isObjRef == TRUE){
+    fputs("Error: cannot brt; top of stack is a ObjRef.\n", stderr);
   }
-  if (*(int *)slot.u.objRef->data == TRUE){
+  if (slot->u.number == TRUE){
     return pos;
   }
   else return ++progCount;
 }
 
 int call(int pos, int progCount){
-  push(newValueObj(++progCount));
+  push(newObjRef(++progCount));
   return pos;
 }
 
 int ret(void){
-  return *(int *)pop().u.objRef->data;
+  return (int)(int *)pop()->u.objRef->data;
 }
 
 void drop(int entries){
@@ -227,15 +230,21 @@ void drop(int entries){
 }
 
 void pushr(void) {
-	push(newObjNum(retRegister));
+  push(newStackSlot(*retRegister));
 }
 
 void popr(void) {
-	retRegister = pop().u.objRef;
+	retRegister = &pop()->u.objRef;
 }
 
 void dup(void){
-  StackSlot temp = pop();
-  push(&temp);
-  push(&temp);
+  StackSlot *slot = pop();
+  push(slot);
+
+  if(slot->isObjRef == TRUE){
+    push(newStackSlot(slot->u.objRef));
+  } else {
+    push(newObjNum(slot->u.number));
+  }
+
 }

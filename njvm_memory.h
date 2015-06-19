@@ -13,13 +13,13 @@
 #include "njvm_memory.h"
 #include "njvm_object.h"
 
-extern StackSlot stack[STACKSIZE];
+extern StackSlot* stack[STACKSIZE];
 extern int stackByteSize;
 extern ObjRef *staticData;
 extern int sdaSize;
 extern int stackPointer;
 extern int framePointer;
-extern ObjRef retRegister;
+extern ObjRef *retRegister;
 
 void allocateSDA(int sdaSize);
 

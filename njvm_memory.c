@@ -8,13 +8,13 @@
 
 #include "njvm_memory.h"
 
-StackSlot stack[STACKSIZE];  /* Stack Array */
+StackSlot* stack[STACKSIZE];  /* Stack Array */
 int stackByteSize = STACKSIZE * sizeof(StackSlot);
 ObjRef *staticData;    /* Static Data Area (Array) */
 int sdaSize;          /* Size of the SDA. Calculatet from the Input-File */
 int stackPointer;
 int framePointer;
-ObjRef retRegister;    /* Return Value */
+ObjRef *retRegister;    /* Return Value */
 
 void allocateSDA(int sdaSize)
 {

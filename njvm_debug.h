@@ -15,6 +15,7 @@
 #include "njvm_memory.h"
 #include "njvm_main.h"
 #include "njvm.h"
+#include "njvm_object.h"
 
 void debugMenu(unsigned int program_memory[], int pos);
 int run(unsigned int program_memory[],int pos, int breakPoint);

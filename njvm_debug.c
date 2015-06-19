@@ -109,21 +109,29 @@ int run(unsigned int program_memory[],int pos, int breakPoint){
 void printStack(void){
     int i;
     printf("--- Show Stack ---\n");
-    printf("SP--> | %10c           | -- %i\n", 'x',stackPointer);
+    printf("SP--> | %10c            | -- %i\n", 'x',stackPointer);
     for(i = stackPointer-1; i>=0; i--) {
         printf("      ------------------------\n");
         if(i == framePointer) {
-            printf("FP--> | %10i           | -- %i\n", STACK[i],i);
-        } else {
-            printf("      | %10i           | -- %i\n", STACK[i],i);
+          if(stack[i]->isObjRef == TRUE) {
+              printf("FP-->(object) | %10p    | -- %i\n",  (void *)stack[i]->u.objRef,i);
+            } else {
+              printf("FP-->(number) | %10i    | -- %i\n", stack[i]->u.number,i);
+			      }
+        } else if(stack[i]->isObjRef == TRUE){
+            printf("     (object) | %10p    | -- %i\n", (void *)stack[i]->u.objRef,i);
+        }else{
+            printf("     (number) | %10i    | -- %i\n", stack[i]->u.number,i);
         }
+
     }
+
     printf("      ------------------------\n");
-    printf("--- End of Stack ---\n");
+		printf("--- End of Stack ---\n");
 }
 
 void printSDA(void){
-
+/*
     int i;
 
     printf("sizeof(StaticDataArea): %d", SDASize );
@@ -132,7 +140,7 @@ void printSDA(void){
         printf("Data %i: %i\n",i,StaticDataArea[i]) ;
     }
     printf("--- End of Static Data Area ---\n");
-
+*/
 }
 
 void printAllInstructions(unsigned int program_memory[]){
