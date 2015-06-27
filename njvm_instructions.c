@@ -39,6 +39,7 @@ void wrint(void)
     StackSlot *slot = pop();
     if (slot->isObjRef == FALSE){
       fputs("Error: cannot wrint; it's not an ObjRef.\n", stderr);
+      exit(EXIT_FAILURE);
     }
     printf("%d", *(int *)slot->u.objRef->data);
 }
@@ -55,6 +56,7 @@ void wrchr(void)
   StackSlot *slot = pop();
   if (slot->isObjRef == FALSE){
     fputs("Error: cannot wrchr; it's not an ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
   }
   printf("%c", *(int *)slot->u.objRef->data);
 }
@@ -69,24 +71,36 @@ void popg(int pos)
   StackSlot *slot = pop();
   if(slot->isObjRef == FALSE){
     fputs("Error: cannot popg; it's not an ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
   }
   staticData[pos]=slot->u.objRef;
 }
 
-void asf(int places) /*TODO: überdenken*/
+void asf(int places)
 {
-    push(newObjNum(framePointer));
-    framePointer = stackPointer;
-    stackPointer = stackPointer + places;
+  int i;
+  push(newObjNum(framePointer));
+  if((stackPointer + places)*sizeof(StackSlot) <= stackByteSize) {
+        framePointer = stackPointer;
+		    for(i = framePointer; i < framePointer + places; i++) {
+			         push(newObjNum(0));
+		    }
+
+	} else {
+    fputs("Error: StackOverFlow.\n", stderr);
+    exit(EXIT_FAILURE);
+	}
+
 }
 
 void rsf (void)
 {
-    StackSlot *slot = pop();
+    StackSlot *slot;
     stackPointer=framePointer;
-      printf("rsf: %d",slot->isObjRef);
+    slot = pop();
     if(slot->isObjRef == TRUE){
       fputs("Error: cannot rsf; it's an ObjRef.\n", stderr);
+      exit(EXIT_FAILURE);
     }
     framePointer=slot->u.number;
 }
@@ -108,83 +122,68 @@ void calc (int cmd){
   int n1;
   if (ss1->isObjRef == FALSE || ss2->isObjRef == FALSE){
     fputs("Error: cannot calculate; values are't ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
   }
 
-  n2 = (int)(int *)ss2->u.objRef->data;
-  n1 = (int)(int *)ss1->u.objRef->data;
+  n2 = *(int *)ss2->u.objRef->data;
+  n1 = *(int *)ss1->u.objRef->data;
 
   switch(cmd){
     case ADD:
-              n1 = n1 + n2;
-              push(ss1);
+              push(newObjRef(n1+n2));
               break;
     case SUB:
-              n1 = n1 - n2;
-              push(ss1);
+              push(newObjRef(n1-n2));
               break;
     case MUL:
-              n1 = n1 * n2;
-              push(ss1);
+              push(newObjRef(n1*n2));
               break;
     case DIV:
-              n1 = n1 / n2;
-              push(ss1);
+              push(newObjRef(n1/n2));
               break;
     case MOD:
-              n1 = n1 % n2;
-              push(ss1);
+              push(newObjRef(n1%n2));
               break;
     case EQ:
               if(n1==n2){
-                n1 = TRUE;
-                push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
               break;
     case NE:
               if(n1!=n2){
-                n1 = TRUE;
-                push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
+              break;
     case LT:
               if(n1<n2){
-              n1 = TRUE;
-              push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
               break;
     case LE:
               if(n1<=n2){
-                n1 = TRUE;
-                push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
               break;
     case GT:
               if(n1>n2){
-                n1 = TRUE;
-                push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
               break;
     case GE:
               if(n1>=n2){
-                n1 = TRUE;
-                push(ss1);
+                push(newObjRef(TRUE));
               } else {
-                n2 = FALSE;
-                push(ss2);
+                push(newObjRef(FALSE));
               }
               break;
   }
@@ -196,10 +195,11 @@ int jmp(int pos){
 
 int brf (int pos, int progCount){
   StackSlot *slot = pop();
-  if(slot->isObjRef == TRUE){
-    fputs("Error: cannot brf; top of stack is a ObjRef.\n", stderr);
+  if(slot->isObjRef == FALSE){
+    fputs("Error: cannot brf; top of stack isn't an ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
   }
-  if (slot->u.number == FALSE){
+  if (*(int *)slot->u.objRef->data == FALSE){
     return pos;
   }
   else return ++progCount;
@@ -207,22 +207,28 @@ int brf (int pos, int progCount){
 
 int brt (int pos, int progCount){
   StackSlot *slot = pop();
-  if(slot->isObjRef == TRUE){
-    fputs("Error: cannot brt; top of stack is a ObjRef.\n", stderr);
+  if(slot->isObjRef == FALSE){
+    fputs("Error: cannot brt; top of stack is an ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
   }
-  if (slot->u.number == TRUE){
+  if (*(int *)slot->u.objRef->data == TRUE){
     return pos;
   }
   else return ++progCount;
 }
 
 int call(int pos, int progCount){
-  push(newObjRef(++progCount));
+  push(newObjNum(++progCount));
   return pos;
 }
 
 int ret(void){
-  return (int)(int *)pop()->u.objRef->data;
+  StackSlot *slot = pop();
+  if(slot->isObjRef == TRUE){
+    fputs("Error: cannot ret; top of stack is an ObjRef.\n", stderr);
+    exit(EXIT_FAILURE);
+  }
+  return slot->u.number;
 }
 
 void drop(int entries){
@@ -230,11 +236,11 @@ void drop(int entries){
 }
 
 void pushr(void) {
-  push(newStackSlot(*retRegister));
+  push(newObjRef(retRegister));
 }
 
 void popr(void) {
-	retRegister = &pop()->u.objRef;
+	retRegister = *(int *)pop()->u.objRef->data;
 }
 
 void dup(void){

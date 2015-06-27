@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include "njvm.h"
 
-
-
 typedef struct{
   unsigned int size;
   unsigned char data[1];

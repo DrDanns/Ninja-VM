@@ -18,9 +18,9 @@ StackSlot *newObjRef(int value) {
 	StackSlot *result;
 	ObjRef objRef;
 
-	objRef = *(ObjRef *)malloc(sizeof(unsigned int) + sizeof(int));
+	objRef = (ObjRef)malloc(sizeof(unsigned int) + sizeof(int));
 	if(objRef == NULL) {
-		fputs("Error: cannot allocate memory for obiRef.\n", stderr);
+		fputs("Error: cannot allocate memory for objRef.\n", stderr);
 	}
 
 	result = (StackSlot *)malloc(sizeof(StackSlot));
@@ -28,7 +28,7 @@ StackSlot *newObjRef(int value) {
 		fputs("Error: cannot allocate newObjRef memory.\n", stderr);
 	}
 
-	objRef->size = sizeof(int);
+  objRef->size = sizeof(int);
 	*(int *)objRef->data = value;
 	result->isObjRef = TRUE;
 	result->u.objRef = objRef;

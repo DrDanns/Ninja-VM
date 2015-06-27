@@ -15,6 +15,8 @@ void debugMenu(unsigned int program_memory[], int pos){
     int stepFlag = FALSE;
     char charInput[50];
     int intInput;
+    ObjRef objAddr; /*Variable zum lokalisieren der ObjRef*/
+    int *address;
 
     while (haltFlag == FALSE){
 
@@ -31,7 +33,7 @@ void debugMenu(unsigned int program_memory[], int pos){
       scanf("%s", charInput );
 
         if (strcmp(charInput, "inspect")==0 || strcmp(charInput, "i")==0){
-            printf("DEBUG [inspect]: stack, data?\n");
+            printf("DEBUG [inspect]: stack, data, object?\n");
             scanf("%s", charInput );
 
             if (strcmp(charInput, "stack")==0 || strcmp(charInput, "s")==0){
@@ -39,6 +41,12 @@ void debugMenu(unsigned int program_memory[], int pos){
             }
             else if (strcmp(charInput, "data")==0 || strcmp(charInput, "d")==0){
                 printSDA();
+            }
+            else if (strcmp(charInput, "object")==0 || strcmp(charInput, "o")==0){
+              printf("DEBUG [object]: Enter object address?\n");
+              scanf("%p",(void **)&address);
+              objAddr = (ObjRef)address;
+              printf("value = %i \n",*(int *)objAddr->data);
             }
         }
 
@@ -87,7 +95,6 @@ void debugMenu(unsigned int program_memory[], int pos){
 
 }
 
-/*TODO: return ersetzen durch pointer und evtl. malloc*/
 int run(unsigned int program_memory[],int pos, int breakPoint){
 
     int instruction = program_memory[pos];
@@ -115,12 +122,12 @@ void printStack(void){
         if(i == framePointer) {
           if(stack[i]->isObjRef == TRUE) {
               printf("FP-->(object) | %10p    | -- %i\n",  (void *)stack[i]->u.objRef,i);
-            } else {
+          } else {
               printf("FP-->(number) | %10i    | -- %i\n", stack[i]->u.number,i);
-			      }
+			    }
         } else if(stack[i]->isObjRef == TRUE){
             printf("     (object) | %10p    | -- %i\n", (void *)stack[i]->u.objRef,i);
-        }else{
+        } else{
             printf("     (number) | %10i    | -- %i\n", stack[i]->u.number,i);
         }
 
@@ -131,25 +138,21 @@ void printStack(void){
 }
 
 void printSDA(void){
-/*
     int i;
 
-    printf("sizeof(StaticDataArea): %d", SDASize );
+    printf("sizeof(StaticDataArea): %d", sdaSize );
     printf("\n--- Show Static Data Area ---\n");
-    for(i = SDASize-1; i>-1; i--) {
-        printf("Data %i: %i\n",i,StaticDataArea[i]) ;
-    }
+    for(i = 0; i < sdaSize; i++) {
+  		printf("Data %i: %i\n",i,(int)(int *)staticData[i]->data);
+  	}
     printf("--- End of Static Data Area ---\n");
-*/
 }
 
 void printAllInstructions(unsigned int program_memory[]){
 
     int i;
-    int length = sizeof(program_memory);
-    printf("länge %d\n",length );
-    /*TODO: halt mit ausgeben. scheinbar funktioniert sizeof()  nicht*/
-    for (i=0; OPCODE(program_memory[i]) != HALT ;i++) {
+
+    for (i=0; i < instructSize; i++) {
                 printf("%04d:\t", i);
                 printInstruction(program_memory[i]);
          }

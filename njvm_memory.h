@@ -17,9 +17,10 @@ extern StackSlot* stack[STACKSIZE];
 extern int stackByteSize;
 extern ObjRef *staticData;
 extern int sdaSize;
+extern int instructSize;
 extern int stackPointer;
 extern int framePointer;
-extern ObjRef *retRegister;
+extern int retRegister;
 
 void allocateSDA(int sdaSize);
 

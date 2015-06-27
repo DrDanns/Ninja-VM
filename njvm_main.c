@@ -69,8 +69,7 @@ int exec(int instruction, int progCount){
     switch (opcode) {
 
     case HALT:
-        fputs("Error: Programm durch HALT in Funktion exec() beendet.\n", stderr);
-	       exit(EXIT_FAILURE);
+	       break;
 
     case PUSHC:
         push(newObjRef(immediate));

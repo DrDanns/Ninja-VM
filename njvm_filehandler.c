@@ -50,7 +50,7 @@ unsigned int* readFile(FILE* file)
                 fputs("Error: File has wrong Version Number.\n", stderr);
 		        exit(EXIT_FAILURE);
 	        }
-	    }    
+	    }
 
         else if (i==2)
             instructionSize=*buffer;
@@ -65,6 +65,7 @@ unsigned int* readFile(FILE* file)
     if (sdaSize != 0)  allocateSDA(sdaSize);
 
     /*allocate space and fill it with the programm*/
+    instructSize = instructionSize;
     buffer = (unsigned int*) malloc (instructionSize * sizeof(int));
     fread(buffer, sizeof(int),instructionSize,file);
     fclose(file);
@@ -72,5 +73,3 @@ unsigned int* readFile(FILE* file)
 
 
 }
-
-

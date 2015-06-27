@@ -10,11 +10,12 @@
 
 StackSlot* stack[STACKSIZE];  /* Stack Array */
 int stackByteSize = STACKSIZE * sizeof(StackSlot);
+int instructSize;
 ObjRef *staticData;    /* Static Data Area (Array) */
 int sdaSize;          /* Size of the SDA. Calculatet from the Input-File */
 int stackPointer;
 int framePointer;
-ObjRef *retRegister;    /* Return Value */
+int retRegister;    /* Return Value */
 
 void allocateSDA(int sdaSize)
 {
