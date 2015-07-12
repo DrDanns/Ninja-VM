@@ -11,11 +11,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "njvm.h"
+#include "bigint.h"
+#include "support.h"
 
-typedef struct{
+/*already in support.h*/
+/*typedef struct{
   unsigned int size;
   unsigned char data[1];
-} *ObjRef;
+} *ObjRef;*/
 
 typedef struct{
   int isObjRef;

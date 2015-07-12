@@ -47,6 +47,18 @@ void debugMenu(unsigned int program_memory[], int pos){
               scanf("%p",(void **)&address);
               objAddr = (ObjRef)address;
               printf("value = %i \n",*(int *)objAddr->data);
+              if(IS_PRIM(objRef)) {
+                bip.op1 = objRef;
+                printf("value = ");
+                bigPrint(stdout);
+                printf("\n");
+              } else {
+                printf("<compound object>\n");
+                objSize = GET_SIZE(objRef);
+                for(i = 0;i < objSize; i++) {
+                printf("item[%i] = %p\n",i,(void* )getInstance(i,objRef));
+                }
+              }
             }
         }
 
@@ -113,6 +125,10 @@ int run(unsigned int program_memory[],int pos, int breakPoint){
 
 }
 
+int getObjectValue(ObjRef objRef) {
+	return *(int *)objRef->data;
+}
+
 void printStack(void){
     int i;
     printf("--- Show Stack ---\n");
@@ -143,7 +159,7 @@ void printSDA(void){
     printf("sizeof(StaticDataArea): %d", sdaSize );
     printf("\n--- Show Static Data Area ---\n");
     for(i = 0; i < sdaSize; i++) {
-  		printf("Data %i: %i\n",i,(int)(int *)staticData[i]->data);
+  		printf("Data %i: %i\n",i,getObjectValue(staticData[i]));
   	}
     printf("--- End of Static Data Area ---\n");
 }

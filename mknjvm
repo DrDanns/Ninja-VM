@@ -1,3 +1,5 @@
 #!/bin/sh
-gcc -m32 -g -Wall -ansi -pedantic -o njvm njvm_main.c njvm_filehandler.c njvm_memory.c njvm_instructions.c njvm_object.c njvm_debug.c
-
+(cd bigint ;
+ gcc -m32 -g -Wall -ansi -pedantic -o bigint.o -c bigint.c ;
+ ar -crs libbigint.a bigint.o)
+gcc -m32 -g -Wall -ansi -pedantic -Ibigintlib -Lbigintlib -lbigint -o njvm njvm_main.c njvm_filehandler.c njvm_memory.c njvm_instructions.c njvm_object.c njvm_debug.c support.c

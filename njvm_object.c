@@ -11,27 +11,29 @@
 #include "njvm_object.h"
 
 StackSlot *newStackSlot(ObjRef objRef){
-	return newObjRef((int)(int *)objRef->data);
+	StackSlot *result;
+
+	result = (StackSlot*)malloc(sizeof(StackSlot));
+	if(result == NULL) {
+		fatalError("cannot allocate memory in newStackSlot.\n");
+	}
+	
+	result->isObjRef = TRUE;
+	result->u.objRef = ref;
+	return result;
 }
 
 StackSlot *newObjRef(int value) {
 	StackSlot *result;
-	ObjRef objRef;
-
-	objRef = (ObjRef)malloc(sizeof(unsigned int) + sizeof(int));
-	if(objRef == NULL) {
-		fputs("Error: cannot allocate memory for objRef.\n", stderr);
-	}
+	bigFromInt(value);
 
 	result = (StackSlot *)malloc(sizeof(StackSlot));
 	if(result == NULL) {
-		fputs("Error: cannot allocate newObjRef memory.\n", stderr);
+		fatalError("cannot allocate memory in newObjRef.\n");
 	}
 
-  objRef->size = sizeof(int);
-	*(int *)objRef->data = value;
 	result->isObjRef = TRUE;
-	result->u.objRef = objRef;
+	result->u.objRef = bip.res;
 
 	return result;
 }

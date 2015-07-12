@@ -7,7 +7,7 @@
 #ifndef NJVM
 #define NJVM
 
-#define VERSION 5
+#define VERSION 6
 #define STACKSIZE 1000
 
 #define FALSE   0

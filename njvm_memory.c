@@ -15,10 +15,9 @@ ObjRef *staticData;    /* Static Data Area (Array) */
 int sdaSize;          /* Size of the SDA. Calculatet from the Input-File */
 int stackPointer;
 int framePointer;
-int retRegister;    /* Return Value */
+ObjRef retRegister;    /* Return Value */
 
-void allocateSDA(int sdaSize)
-{
+void allocateSDA(int sdaSize){
     staticData = (ObjRef*) malloc (sdaSize * sizeof(ObjRef));
     sdaSize = sdaSize;
     if (staticData == NULL)

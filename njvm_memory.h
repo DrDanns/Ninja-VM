@@ -20,7 +20,7 @@ extern int sdaSize;
 extern int instructSize;
 extern int stackPointer;
 extern int framePointer;
-extern int retRegister;
+extern ObjRef retRegister;
 
 void allocateSDA(int sdaSize);
 

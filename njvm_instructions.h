@@ -9,6 +9,8 @@
 
 #include "njvm_memory.h"
 #include "njvm_object.h"
+#include "bigint.h"
+#include "support.h"
 
 
 
