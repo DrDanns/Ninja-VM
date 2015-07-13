@@ -106,9 +106,9 @@ void popl (int pos)
 }
 
 void calc (int cmd){
-  bip.op2 = pop().u.objRef;
-	bip.op1 = pop().u.objRef;
   int result;
+  bip.op2 = pop()->u.objRef;
+	bip.op1 = pop()->u.objRef;
 
   switch(cmd){
     case ADD:
@@ -211,11 +211,12 @@ int brt (int pos, int progCount){
   }
 
   bip.op2 = bip.res;
-	bip.op1 = slot->.u.objRef;
-	if(bigCmp() == 0)
+	bip.op1 = slot->u.objRef;
+	if(bigCmp() == 0){
     return pos;
+  } else {
+    return ++progCount;
   }
-  else return ++progCount;
 }
 
 int call(int pos, int progCount){
@@ -235,7 +236,7 @@ int ret(void){
 
 void drop(int entries){
   int i;
-	for(i = 0;i<value; i++) {
+	for(i = 0;i<entries; i++) {
 		pop();
 	}
 }

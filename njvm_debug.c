@@ -47,18 +47,10 @@ void debugMenu(unsigned int program_memory[], int pos){
               scanf("%p",(void **)&address);
               objAddr = (ObjRef)address;
               printf("value = %i \n",*(int *)objAddr->data);
-              if(IS_PRIM(objRef)) {
-                bip.op1 = objRef;
-                printf("value = ");
-                bigPrint(stdout);
-                printf("\n");
-              } else {
-                printf("<compound object>\n");
-                objSize = GET_SIZE(objRef);
-                for(i = 0;i < objSize; i++) {
-                printf("item[%i] = %p\n",i,(void* )getInstance(i,objRef));
-                }
-              }
+              bip.op1 = objAddr;
+              printf("value = ");
+              bigPrint(stdout);
+              printf("\n");
             }
         }
 

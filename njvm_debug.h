@@ -16,6 +16,7 @@
 #include "njvm_main.h"
 #include "njvm.h"
 #include "njvm_object.h"
+#include "bigint.h"
 
 void debugMenu(unsigned int program_memory[], int pos);
 int run(unsigned int program_memory[],int pos, int breakPoint);

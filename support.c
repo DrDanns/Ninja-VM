@@ -14,12 +14,12 @@ void fatalError(char *msg) {
 ObjRef newPrimObject(int dataSize) {
   ObjRef objRef;
 
-  if(objRef == NULL) {
-    fatalError("cannot allocate memory for objRef.\n")
+  objRef = malloc(sizeof(unsigned int) + dataSize * sizeof(unsigned char));
+
+  if(objRef == NULL){
+      fatalError("cannot allocate memory for objRef.\n");
   }
   
-  objRef = allocate(sizeof(unsigned int) +
-                  dataSize * sizeof(unsigned char));
   objRef->size = dataSize;
 
   return objRef;

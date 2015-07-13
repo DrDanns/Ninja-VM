@@ -17,9 +17,9 @@ StackSlot *newStackSlot(ObjRef objRef){
 	if(result == NULL) {
 		fatalError("cannot allocate memory in newStackSlot.\n");
 	}
-	
+
 	result->isObjRef = TRUE;
-	result->u.objRef = ref;
+	result->u.objRef = objRef;
 	return result;
 }
 
