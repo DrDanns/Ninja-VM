@@ -27,9 +27,8 @@ StackSlot *pop(void){
 }
 
 void rdint(void){
-    int i;
-    scanf("%d", &i);
-    push(newObjRef(i));
+    bigRead(stdin);
+    push(newStackSlot(bip.res));
 }
 
 void wrint(void){
@@ -38,7 +37,7 @@ void wrint(void){
       fatalError("cannot wrint; it's not an ObjRef.\n");
     }
     bip.op1 = slot->u.objRef;
-    printf("%d",bigToInt());
+    bigPrint(stdout);
 }
 
 void rdchr(void){
