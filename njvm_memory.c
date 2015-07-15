@@ -17,9 +17,9 @@ int stackPointer;
 int framePointer;
 ObjRef retRegister;    /* Return Value */
 
-void allocateSDA(int sdaSize){
+void allocateSDA(int size){
     staticData = (ObjRef*) malloc (sdaSize * sizeof(ObjRef));
-    sdaSize = sdaSize;
+    sdaSize = size;
     if (staticData == NULL)
       fputs("Error: cannot allocate memory for the Static Data Area.\n", stderr);
 }
