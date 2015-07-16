@@ -12,8 +12,6 @@
 #include "bigint.h"
 #include "support.h"
 
-
-
 void push(StackSlot *obj);
 StackSlot* pop(void);
 void rdint(void);
@@ -36,5 +34,15 @@ void drop(int entries);
 void pushr(void);
 void popr(void);
 void dup(void);
+void new(int size);
+void getf(int offset);
+void putf(int offset);
+void newa(void);
+void getfa(void);
+void putfa(void);
+void getsz(void);
+void pushn(void);
+void refeq(void);
+void refne(void);
 
 #endif /*NJVM_INSTRUCTIONS*/

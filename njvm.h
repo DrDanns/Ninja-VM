@@ -17,6 +17,10 @@
 #define SIGN_EXTEND(i) ((i) & 0x00800000 ? (i) | 0xFF000000 : (i))
 #define OPCODE(j) (((j) & 0xFF000000) >> 24)
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
+#define MSB (1 << (8 * sizeof(unsigned int) - 1))
+#define IS_PRIM(objRef) (((objRef)->size & MSB) == 0)
+#define GET_SIZE(objRef) ((objRef)->size & ~MSB)
+#define GET_REFS(objRef) ((ObjRef *)(objRef)->data)
 
 #define HALT 0
 #define PUSHC 1
@@ -56,5 +60,19 @@
 #define PUSHR 29
 #define POPR 30
 #define DUP 31
+
+#define NEW 32
+#define GETF 33
+#define PUTF 34
+
+#define NEWA 35
+#define GETFA 36
+#define PUTFA 37
+
+#define GETSZ 38
+
+#define PUSHN 39
+#define REFEQ 40
+#define REFNE 41
 
 #endif /*NJVM*/

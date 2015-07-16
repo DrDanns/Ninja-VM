@@ -76,7 +76,7 @@ void asf(int places){
   if((stackPointer + places)*sizeof(StackSlot) <= stackByteSize) {
         framePointer = stackPointer;
 		    for(i = framePointer; i < framePointer + places; i++) {
-			         push(newObjNum(0));
+			         push(newStackSlot(*newEmptyObjRef()));
 		    }
 
 	} else {
@@ -132,11 +132,11 @@ void calc (int cmd){
               break;
     case EQ:
               result = bigCmp();
-        			if(result == 0) {
-        				push(newObjRef(1));
-        			} else {
-        				push(newObjRef(0));
-        			}
+              if(result == 0) {
+                push(newObjRef(1));
+              } else {
+                push(newObjRef(0));
+              }
               break;
     case NE:
               result = bigCmp();
@@ -227,7 +227,7 @@ int ret(void){
   StackSlot *slot = pop();
 
   if(slot->isObjRef == TRUE){
-    fatalError("Error: cannot ret; top of stack is an ObjRef.\n");
+    fatalError("cannot ret; top of stack is an ObjRef.\n");
   }
 
   return slot->u.number;
@@ -257,5 +257,108 @@ void dup(void){
   } else {
     push(newObjNum(slot->u.number));
   }
+}
 
+void new(int size) {
+	push(newRecordsObject(size));
+}
+
+void getf(int offset) {
+	ObjRef objRef;
+	objRef = pop()->u.objRef;
+	objRef = *(GET_REFS(objRef)+offset);
+	push(newStackSlot(objRef));
+}
+
+void putf(int offset) {
+	ObjRef objRefVal;
+	ObjRef objRefObj;
+	objRefVal = pop()->u.objRef;
+	objRefObj = pop()->u.objRef;
+	*(GET_REFS(objRefObj)+offset) = objRefVal;
+}
+
+void newa() {
+	bip.op1 = pop()->u.objRef;
+	push(newRecordsObject(bigToInt()));
+}
+
+void getfa() {
+	ObjRef objRefArray;
+	int index;
+
+	bip.op1 = pop()->u.objRef; /* index*/
+	index = bigToInt();
+	objRefArray = pop()->u.objRef;
+
+	if((index >= 0) && (index < GET_SIZE(objRefArray))) {
+		objRefArray = *(GET_REFS(objRefArray) + index);
+		push(newStackSlot(objRefArray));
+	} else {
+		fatalError("WrongIndex");
+	}
+}
+
+void putfa() {
+	ObjRef objRefValue;
+	ObjRef objRefArray;
+	int index;
+
+	objRefValue = pop()->u.objRef;
+	bip.op1 = pop()->u.objRef;  /*index*/
+	objRefArray = pop()->u.objRef;
+	index = bigToInt();
+
+	if((index >= 0) && (index < GET_SIZE(objRefArray))) {
+        *(GET_REFS(objRefArray) + index) = objRefValue;
+    } else {
+		fatalError("WrongIndex");
+	}
+}
+
+void getsz() {
+	ObjRef objref;
+	objref = pop()->u.objRef;
+
+	if(IS_PRIM(objref)) {
+		bigFromInt(-1);
+	} else {
+		bigFromInt(GET_SIZE(objref));
+	}
+
+	push(newStackSlot(bip.res));
+}
+
+void pushn() {
+	push(newStackSlot(*newEmptyObjRef()));
+}
+
+void refeq() {
+	ObjRef objRef1;
+	ObjRef objRef2;
+
+	objRef1 = pop()->u.objRef;
+	objRef2 = pop()->u.objRef;
+
+	if(objRef1 == objRef2) {
+		bigFromInt(1);
+	} else {
+		bigFromInt(0);
+	}
+	push(newStackSlot(bip.res));
+}
+
+void refne() {
+	ObjRef objRef1;
+	ObjRef objRef2;
+
+	objRef1 = pop()->u.objRef;
+	objRef2 = pop()->u.objRef;
+
+	if(objRef1 == objRef2) {
+		bigFromInt(0);
+	} else {
+		bigFromInt(1);
+	}
+	push(newStackSlot(bip.res));
 }

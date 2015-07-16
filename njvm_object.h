@@ -20,6 +20,7 @@
   unsigned char data[1];
 } *ObjRef;*/
 
+
 typedef struct{
   int isObjRef;
   union {
@@ -31,5 +32,7 @@ typedef struct{
 StackSlot *newStackSlot(ObjRef objRef);
 StackSlot *newObjRef(int value);
 StackSlot *newObjNum(int value);
+ObjRef *newEmptyObjRef();
+StackSlot *newRecordsObject(int size);
 
 #endif /*NJVM_OBJECT*/

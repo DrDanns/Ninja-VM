@@ -15,6 +15,8 @@ void debugMenu(unsigned int program_memory[], int pos){
     int stepFlag = FALSE;
     char charInput[50];
     int intInput;
+    int objSize;
+    int i;
     ObjRef objAddr; /*Variable zum lokalisieren der ObjRef*/
     int *address;
 
@@ -46,10 +48,20 @@ void debugMenu(unsigned int program_memory[], int pos){
               printf("DEBUG [object]: Enter object address?\n");
               scanf("%p",(void **)&address);
               objAddr = (ObjRef)address;
-              bip.op1 = objAddr;
-              printf("value = ");
-              bigPrint(stdout);
-              printf("\n");
+
+              if(IS_PRIM(objAddr)){
+                 bip.op1 = objAddr;
+                 printf("value = ");
+                 bigPrint(stdout);
+                 printf("\n");
+              } else {
+                    printf("<compound object>\n");
+                    objSize = GET_SIZE(objAddr);
+
+                    for(i = 0;i < objSize; i++) {
+                        printf("item[%i] = %p\n",i,(void* )getInstance(i,objAddr));
+                    }
+              }
             }
         }
 
@@ -116,8 +128,10 @@ int run(unsigned int program_memory[],int pos, int breakPoint){
 
 }
 
-void * getObjectValue(ObjRef objRef) {
-	return objRef;
+ObjRef getInstance(int pos, ObjRef objref) {
+	ObjRef inst;
+	inst = *(GET_REFS(objref)+pos);
+	return inst;
 }
 
 void printStack(void){
@@ -127,13 +141,20 @@ void printStack(void){
     for(i = stackPointer-1; i>=0; i--) {
         printf("      ------------------------\n");
         if(i == framePointer) {
-          if(stack[i]->isObjRef == TRUE) {
-              printf("FP-->(object) | %10p    | -- %i\n",  (void *)stack[i]->u.objRef,i);
-          } else {
-              printf("FP-->(number) | %10i    | -- %i\n", stack[i]->u.number,i);
-			    }
+            if(stack[i] == NULL){
+                printf("FP-->(objref) |     nil     | -- %i\n",i);
+            } else if(stack[i]->isObjRef == TRUE) {
+                printf("FP-->(objref) | %10p    | -- %i\n",  (void *)stack[i]->u.objRef,i);
+            } else {
+                printf("FP-->(number) | %10i    | -- %i\n", stack[i]->u.number,i);
+            }
+
+        }
+
+        if(stack[i] == NULL){
+            printf("FP-->(objref) |     nil     | -- %i\n",i);
         } else if(stack[i]->isObjRef == TRUE){
-            printf("     (object) | %10p    | -- %i\n", (void *)stack[i]->u.objRef,i);
+            printf("     (objref) | %10p    | -- %i\n", (void *)stack[i]->u.objRef,i);
         } else{
             printf("     (number) | %10i    | -- %i\n", stack[i]->u.number,i);
         }
@@ -147,10 +168,13 @@ void printStack(void){
 void printSDA(void){
     int i;
 
-    printf("sizeof(StaticDataArea): %d", sdaSize );
     printf("\n--- Show Static Data Area ---\n");
     for(i = 0; i < sdaSize; i++) {
-  		printf("Data %i: %10p\n",i,getObjectValue(staticData[i]));
+        if(staticData[i] == NULL){
+            printf("Data [%i]: nil  \n",i);
+        } else {
+            printf("Data [%i]: %10p\n",i,(void *)staticData[i]);
+  		}
   	}
     printf("--- End of Static Data Area ---\n");
 }
@@ -298,6 +322,46 @@ void printInstruction(unsigned int instruction){
 
             case DUP:
                 printf("dup\t\n");
+                break;
+
+            case NEW:
+                printf("new\t%d\n", immediate);
+                break;
+
+            case GETF:
+                printf("getf\t%d\n", immediate);
+                break;
+
+            case PUTF:
+                printf("putf\t%d\n", immediate);
+                break;
+
+            case NEWA:
+                printf("newa\t\n");
+                break;
+
+            case GETFA:
+                printf("getfa\t\n");
+                break;
+
+            case PUTFA:
+                printf("putfa\t\n");
+                break;;
+
+            case GETSZ:
+                printf("getsz\t\n");
+                break;
+
+            case PUSHN:
+                printf("pushn\t\n");
+                break;
+
+            case REFEQ:
+                printf("refeq\t\n");
+                break;
+
+            case REFNE:
+                printf("refne\t\n");
                 break;
                 }
 

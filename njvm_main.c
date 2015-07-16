@@ -69,12 +69,11 @@ int exec(int instruction, int progCount){
     switch (opcode) {
 
     case HALT:
-	       break;
+        break;
 
     case PUSHC:
         push(newObjRef(immediate));
         return ++progCount;
-
     case ADD:
         calc(opcode);
         return ++progCount;
@@ -90,7 +89,6 @@ int exec(int instruction, int progCount){
     case DIV:
         calc(opcode);
         return ++progCount;
-
     case MOD:
         calc(opcode);
         return ++progCount;
@@ -145,7 +143,7 @@ int exec(int instruction, int progCount){
 
     case LT:
         calc(opcode);
-	      return ++progCount;
+        return ++progCount;
 
     case LE:
         calc(opcode);
@@ -190,7 +188,48 @@ int exec(int instruction, int progCount){
         dup();
         return ++progCount;
 
-    default: fputs("Error: Unsupported Operation-Code.\n", stderr);
+    case NEW:
+        new(immediate);
+        return ++progCount;
+
+    case GETF:
+        getf(immediate);
+        return ++progCount;
+
+    case PUTF:
+        putf(immediate);
+        return ++progCount;
+
+    case NEWA:
+        newa();
+        return ++progCount;
+
+    case GETFA:
+        getfa();
+        return ++progCount;
+
+    case PUTFA:
+        putfa();
+        return ++progCount;
+
+    case GETSZ:
+        getsz();
+        return ++progCount;
+
+    case PUSHN:
+        pushn();
+        return ++progCount;
+
+    case REFEQ:
+        refeq();
+        return ++progCount;
+
+    case REFNE:
+        refne();
+        return ++progCount;
+
+    default:
+        fputs("Error: Unsupported Operation-Code.\n", stderr);
         exit(EXIT_FAILURE);
     }
 

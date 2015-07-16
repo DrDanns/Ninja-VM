@@ -19,6 +19,7 @@
 #include "bigint.h"
 
 void debugMenu(unsigned int program_memory[], int pos);
+ObjRef getInstance(int pos, ObjRef objref);
 int run(unsigned int program_memory[],int pos, int breakPoint);
 void printStack(void);
 void printSDA(void);

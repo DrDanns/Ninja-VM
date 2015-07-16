@@ -8,7 +8,7 @@
 
 #include "njvm_memory.h"
 
-StackSlot* stack[STACKSIZE];  /* Stack Array */
+StackSlot* stack[STACKSIZE];
 int stackByteSize = STACKSIZE * sizeof(StackSlot);
 int instructSize;
 ObjRef *staticData;    /* Static Data Area (Array) */

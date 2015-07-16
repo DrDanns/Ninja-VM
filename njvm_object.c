@@ -15,7 +15,7 @@ StackSlot *newStackSlot(ObjRef objRef){
 
 	result = (StackSlot*)malloc(sizeof(StackSlot));
 	if(result == NULL) {
-		fatalError("cannot allocate memory in newStackSlot.\n");
+		fatalError("cannot allocate memory for a newStackSlot.\n");
 	}
 
 	result->isObjRef = TRUE;
@@ -24,18 +24,8 @@ StackSlot *newStackSlot(ObjRef objRef){
 }
 
 StackSlot *newObjRef(int value) {
-	StackSlot *result;
 	bigFromInt(value);
-
-	result = (StackSlot *)malloc(sizeof(StackSlot));
-	if(result == NULL) {
-		fatalError("cannot allocate memory in newObjRef.\n");
-	}
-
-	result->isObjRef = TRUE;
-	result->u.objRef = bip.res;
-
-	return result;
+    return newStackSlot(bip.res);
 }
 
 StackSlot *newObjNum(int value) {
@@ -47,4 +37,22 @@ StackSlot *newObjNum(int value) {
 	result->isObjRef = FALSE;
 	result->u.number = value;
 	return result;
+}
+
+ObjRef *newEmptyObjRef(){
+    ObjRef *objRef = NULL;
+    return objRef;
+}
+
+StackSlot *newRecordsObject(int size){
+    ObjRef record;
+    int i;
+    record = (ObjRef)malloc(sizeof(unsigned int) + (size * sizeof(record)));
+    record->size = size | MSB;
+
+    for(i = 0;i < size;i++) {
+		*(GET_REFS(record)+i) = *newEmptyObjRef();
+	}
+
+    return newStackSlot(record);
 }
