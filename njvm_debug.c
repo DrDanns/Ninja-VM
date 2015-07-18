@@ -136,33 +136,34 @@ ObjRef getInstance(int pos, ObjRef objref) {
 
 void printStack(void){
     int i;
-    printf("--- Show Stack ---\n");
-    printf("SP--> | %10c            | -- %i\n", 'x',stackPointer);
+    printf("------------ Show Stack -----------\n");
+    printf("SP--> %04i:\t(xxxxxx)  xxxxxxxxx\n", stackPointer);
     for(i = stackPointer-1; i>=0; i--) {
-        printf("      ------------------------\n");
+        printf("      -----------------------------\n");
         if(i == framePointer) {
-            if(stack[i] == NULL){
-                printf("FP-->(objref) |     nil     | -- %i\n",i);
-            } else if(stack[i]->isObjRef == TRUE) {
-                printf("FP-->(objref) | %10p    | -- %i\n",  (void *)stack[i]->u.objRef,i);
-            } else {
-                printf("FP-->(number) | %10i    | -- %i\n", stack[i]->u.number,i);
-            }
-
-        }
-
-        if(stack[i] == NULL){
-            printf("FP-->(objref) |     nil     | -- %i\n",i);
+          if(stack[i]->isObjRef == TRUE) {
+               if(stack[i]->u.objRef == NULL){
+                 printf("FP--> %04i:\t(objref)  nil\n",i);
+               } else {
+                 printf("FP--> %04i:\t(objref) %10p\n", i, (void *)stack[i]->u.objRef);
+               }
+          } else {
+                printf("FP--> %04i:\t(number)  %i\n", i, stack[i]->u.number);
+          }
         } else if(stack[i]->isObjRef == TRUE){
-            printf("     (objref) | %10p    | -- %i\n", (void *)stack[i]->u.objRef,i);
-        } else{
-            printf("     (number) | %10i    | -- %i\n", stack[i]->u.number,i);
+            if (stack[i]->u.objRef == NULL){
+              printf("      %04i:\t(objref)  nil\n",i);
+            } else {
+              printf("      %04i:\t(objref) %10p\n", i, (void *)stack[i]->u.objRef);
+            }
+        } else {
+            printf("      %04i:\t(number)  %i\n",i , stack[i]->u.number);
         }
 
     }
 
-    printf("      ------------------------\n");
-		printf("--- End of Stack ---\n");
+    printf("      -----------------------------\n");
+		printf("---------- End of Stack -----------\n");
 }
 
 void printSDA(void){
@@ -171,9 +172,9 @@ void printSDA(void){
     printf("\n--- Show Static Data Area ---\n");
     for(i = 0; i < sdaSize; i++) {
         if(staticData[i] == NULL){
-            printf("Data [%i]: nil  \n",i);
+            printf("Data [%i]:\tnil\n",i);
         } else {
-            printf("Data [%i]: %10p\n",i,(void *)staticData[i]);
+            printf("Data [%i]:\t%10p\n",i,(void *)staticData[i]);
   		}
   	}
     printf("--- End of Static Data Area ---\n");

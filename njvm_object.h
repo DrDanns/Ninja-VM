@@ -32,7 +32,7 @@ typedef struct{
 StackSlot *newStackSlot(ObjRef objRef);
 StackSlot *newObjRef(int value);
 StackSlot *newObjNum(int value);
-ObjRef *newEmptyObjRef();
+ObjRef newEmptyObjRef();
 StackSlot *newRecordsObject(int size);
 
 #endif /*NJVM_OBJECT*/

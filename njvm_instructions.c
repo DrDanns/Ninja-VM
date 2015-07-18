@@ -76,7 +76,7 @@ void asf(int places){
   if((stackPointer + places)*sizeof(StackSlot) <= stackByteSize) {
         framePointer = stackPointer;
 		    for(i = framePointer; i < framePointer + places; i++) {
-			         push(newStackSlot(*newEmptyObjRef()));
+			         push(newStackSlot(newEmptyObjRef()));
 		    }
 
 	} else {
@@ -330,7 +330,7 @@ void getsz() {
 }
 
 void pushn() {
-	push(newStackSlot(*newEmptyObjRef()));
+	push(newStackSlot(newEmptyObjRef()));
 }
 
 void refeq() {

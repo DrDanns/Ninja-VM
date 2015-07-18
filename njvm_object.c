@@ -25,7 +25,7 @@ StackSlot *newStackSlot(ObjRef objRef){
 
 StackSlot *newObjRef(int value) {
 	bigFromInt(value);
-    return newStackSlot(bip.res);
+  return newStackSlot(bip.res);
 }
 
 StackSlot *newObjNum(int value) {
@@ -39,19 +39,21 @@ StackSlot *newObjNum(int value) {
 	return result;
 }
 
-ObjRef *newEmptyObjRef(){
-    ObjRef *objRef = NULL;
+ObjRef newEmptyObjRef(){
+    ObjRef objRef = NULL;
     return objRef;
 }
 
 StackSlot *newRecordsObject(int size){
     ObjRef record;
+		ObjRef *objRef;
     int i;
-    record = (ObjRef)malloc(sizeof(unsigned int) + (size * sizeof(record)));
+
+    record = (ObjRef)malloc(sizeof(unsigned int) + (size * sizeof(objRef)));
     record->size = size | MSB;
 
     for(i = 0;i < size;i++) {
-		*(GET_REFS(record)+i) = *newEmptyObjRef();
+		*(GET_REFS(record)+i) = newEmptyObjRef();
 	}
 
     return newStackSlot(record);
