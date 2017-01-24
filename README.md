@@ -23,9 +23,9 @@ Mit der Option **--debug** wird der Debuger gestartet -> ``./njvm --debug ./NJVM
 
 Folgende Optionen sind möglich:
 * inspect
-⋅⋅* stack: Der komplette Stack wird ausgegeben
-⋅⋅* data: Die statischen Daten werden ausgegeben
-⋅⋅* object: Mit Eingabe der Objekt Referenz wird der Wert des Objektes ausgegeben
+  * stack: Der komplette Stack wird ausgegeben
+  * data: Die statischen Daten werden ausgegeben
+  * object: Mit Eingabe der Objekt Referenz wird der Wert des Objektes ausgegeben
 * quit: Die Virtuelle Maschine wird beendet
 * run: Das Programm läuft weiter und endet entweder beim vorher gesetzten BreakPoint oder wenn es das Ende erreicht hat
 * list: Die Befehle im Programmspeicher werden aufgelistet
